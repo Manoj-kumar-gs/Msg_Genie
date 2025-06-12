@@ -6,7 +6,8 @@ import sendVerificationEmail from "@/clients/sendVerificationEmail";
 
 export async function POST(request: Request) {
     try {
-        const { username, email, password } = await request.json();
+        await dbConnect();
+        const { username, email, password, message } = await request.json();
         const verifiedUser = await UserModel.findOne(
             {
                 username,
@@ -37,11 +38,11 @@ export async function POST(request: Request) {
 
             if (notVerifiedExistingUser) {
                 const hassedPassword = await bcrypt.hash(password, 10);
-                notVerifiedExistingUser.username = username,
-                notVerifiedExistingUser.email = email,
-                notVerifiedExistingUser.password = hassedPassword,
-                notVerifiedExistingUser.verifyCode = verifyCode,
-                notVerifiedExistingUser.verifyCodeExpiry = verifyCodeExpiry,
+                notVerifiedExistingUser.username = username;
+                notVerifiedExistingUser.email = email;
+                notVerifiedExistingUser.password = hassedPassword;
+                notVerifiedExistingUser.verifyCode = verifyCode;
+                notVerifiedExistingUser.verifyCodeExpiry = verifyCodeExpiry;
                 await notVerifiedExistingUser.save()
             }
             else {
@@ -54,7 +55,10 @@ export async function POST(request: Request) {
                     verifyCodeExpiry:verifyCodeExpiry,
                     isVerified: false,
                     isAcceptingMessage: true,
-                    messages: []
+                    messages: [{
+                        content: message,
+                        createdAt : Date.now()
+                    }]
                 })
                 await newUser.save()
             }
@@ -68,22 +72,32 @@ export async function POST(request: Request) {
                     return Response.json(
                         {
                             success: false,
-                            message: emailResponse.message
+                            message: "email not sent"
                         },
                         {
                             status: 500
                         }
                     )
                 }
+                
                 return Response.json(
                     {
                         success: true,
-                        message: emailResponse.message
+                        message: "user created successfully,verification email sent"
                     },
                     {
                         status: 201
                     }
                 )
+                // return Response.json(
+                //     {
+                //         success: true,
+                //         message: emailResponse.message
+                //     },
+                //     {
+                //         status: 201
+                //     }
+                // )
         }
     } catch (error) {
         console.log("Error registering user", error)

@@ -10,6 +10,7 @@ export const authOptions: NextAuthOptions = {
             id: "Credentials",
             name: "credentials",
             credentials: {
+                username: { label: "Username", type: "text", placeholder: "enter username" },
                 email: { label: "Email", type: "text", placeholder: "enter email" },
                 password: { label: "Password", type: "password", placeholder: "enter password" }
             },
@@ -25,7 +26,7 @@ export const authOptions: NextAuthOptions = {
                     if (!user) {
                         throw new Error("User not found")
                     }
-                    if (!user?.isVerified) {
+                    if (user?.isVerified) {
                         throw new Error("Please verify your account before login")
                     }
                     const checkUserPassword = await bcrypt.compare(credentials.password, user?.password)
@@ -34,7 +35,7 @@ export const authOptions: NextAuthOptions = {
                     }
                     return user;
                 } catch (error: any) {
-                    throw new Error(error)
+                    throw error
                 }
             }
         })
@@ -59,9 +60,9 @@ export const authOptions: NextAuthOptions = {
             return token
         }
     },
-    pages: {
-        signIn: "/auth/sign-in"
-    },
+    // pages: {
+    //     signIn: "/sign-in"
+    // },
     session: {
         strategy: "jwt"
     }

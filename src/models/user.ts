@@ -14,7 +14,7 @@ const MessageSchema = new Schema<Message>({
     createdAt: { 
         type: Date,
         required: true,
-        default: Date.now
+        default: Date.now()
     }
 })
 
@@ -65,6 +65,7 @@ const UserSchema = new Schema<User>({
     messages: [MessageSchema]
 })
 
-const UserModel = (mongoose.models.user as mongoose.Model<User>) || mongoose.model<User>("User", UserSchema)
+const UserModel = mongoose.models.User || mongoose.model<User>("User", UserSchema);
+// const UserModel = models.User || model<User>("User", UserSchema);
 
-export default UserModel;
+export default UserModel;   
