@@ -54,10 +54,9 @@ export async function POST(request: Request) {
                     verifyCode:verifyCode,
                     verifyCodeExpiry:verifyCodeExpiry,
                     isVerified: false,
-                    isAcceptingMessage: true,
+                    isAcceptingMessages: true,
                     messages: [{
                         content: message,
-                        createdAt : Date.now()
                     }]
                 })
                 await newUser.save()
@@ -89,15 +88,6 @@ export async function POST(request: Request) {
                         status: 201
                     }
                 )
-                // return Response.json(
-                //     {
-                //         success: true,
-                //         message: emailResponse.message
-                //     },
-                //     {
-                //         status: 201
-                //     }
-                // )
         }
     } catch (error) {
         console.log("Error registering user", error)

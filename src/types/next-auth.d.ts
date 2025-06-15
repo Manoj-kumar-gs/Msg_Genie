@@ -6,13 +6,13 @@ declare module "next-auth" {
         username: string;
         email: string;
         isVerified?: boolean;
-        isAcceptingMessage?: boolean;
+        isAcceptingMessages?: boolean;
     }
     interface Session {
         _id: string;
         username: string;
         email: string;
         isVerified?: boolean;
-        isAcceptingMessage?: boolean;
+        isAcceptingMessages?: boolean;
     }
 }
