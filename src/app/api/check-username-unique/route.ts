@@ -15,13 +15,14 @@ export async function GET(request: Request) {
             username: searchParams.get('username')
         }
         const result = usernameQuerySchema.safeParse(queryparams)
+        console.log(result)
 
         if (!result.success) {
             console.error("fieldErrors :", result.error.flatten().fieldErrors);
             const errors = result.error.format().username?._errors || []
             return Response.json({
-                message: "Invalid username",
-                issues: errors?.length > 0 ? errors.join("' ") : "invalid username",
+                issues: "Invalid username",
+                message: errors?.length > 0 ? errors.join("' ") : "invalid username",
             }, {
                 status: 400
             });
@@ -32,14 +33,14 @@ export async function GET(request: Request) {
         if (existingVerifiedUser) {
             return Response.json({
                 success: false,
-                message: "user already exists"
+                message: "username already taken"
             })
         }
 
         return Response.json(
             {
                 success: true,
-                message: "Valid username"
+                message: "username is unique"
             },
             { status: 200 });
 

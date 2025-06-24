@@ -7,45 +7,58 @@ import sendVerificationEmail from "@/clients/sendVerificationEmail";
 export async function POST(request: Request) {
     try {
         await dbConnect();
-        const { username, email, password, message } = await request.json();
+        const { username, email, password } = await request.json();
         const verifiedUser = await UserModel.findOne(
             {
                 username,
-                isVerified: true
+                isVerified:true
             })
         if (verifiedUser) {
             return Response.json(
                 {
                     success: false,
-                    message: "Your are verified user, please log in"
+                    message: "username already taken"
                 },
                 {
                     status: 400
                 }
             )
-        }
-        else {
-
-            const notVerifiedExistingUser = await UserModel.findOne(
-                { 
-                    email,
-                    isVerified:false
-                }
-            )
+            }
+            const existingUserByEmail = await UserModel.findOne({email})
             const verifyCode = Math.floor(100000 + Math.random() * 900000).toString()
             const verifyCodeExpiry = new Date();
             verifyCodeExpiry.setHours(verifyCodeExpiry.getHours() + 1)
-
-            if (notVerifiedExistingUser) {
+            if(existingUserByEmail){
+                
+            if(existingUserByEmail.isVerified){
+                return Response.json(
+                    {
+                        success: false,
+                        message: "user already exists with this email"
+                    },
+                    {
+                        status: 400
+                    }
+                )
+            }else {
                 const hassedPassword = await bcrypt.hash(password, 10);
-                notVerifiedExistingUser.username = username;
-                notVerifiedExistingUser.email = email;
-                notVerifiedExistingUser.password = hassedPassword;
-                notVerifiedExistingUser.verifyCode = verifyCode;
-                notVerifiedExistingUser.verifyCodeExpiry = verifyCodeExpiry;
-                await notVerifiedExistingUser.save()
+                existingUserByEmail.username = username;
+                existingUserByEmail.email = email;
+                existingUserByEmail.password = hassedPassword;
+                existingUserByEmail.verifyCode = verifyCode;
+                existingUserByEmail.verifyCodeExpiry = verifyCodeExpiry;
+                await existingUserByEmail.save()
+                 return Response.json(
+                    {
+                        success: true,
+                        message: "verification email sent"
+                    },
+                    {
+                        status: 201
+                    }
+                )
             }
-            else {
+            }
                 const hassedPassword = await bcrypt.hash(password, 10);
                 const newUser = new UserModel({
                     username: username,
@@ -55,29 +68,26 @@ export async function POST(request: Request) {
                     verifyCodeExpiry:verifyCodeExpiry,
                     isVerified: false,
                     isAcceptingMessages: true,
-                    messages: [{
-                        content: message,
-                    }]
+                    messages: []
                 })
                 await newUser.save()
-            }
-                const emailResponse = await sendVerificationEmail(
-                    username,
-                    email,
-                    verifyCode,
-                )
+                // const emailResponse = await sendVerificationEmail(
+                //     username,
+                //     email,
+                //     verifyCode,
+                // )
 
-                if (!emailResponse.success) {
-                    return Response.json(
-                        {
-                            success: false,
-                            message: "email not sent"
-                        },
-                        {
-                            status: 500
-                        }
-                    )
-                }
+                // if (!emailResponse.success) {
+                //     return Response.json(
+                //         {
+                //             success: false,
+                //             message: "email not sent"
+                //         },
+                //         {
+                //             status: 500
+                //         }
+                //     )
+                // }
                 
                 return Response.json(
                     {
@@ -88,7 +98,6 @@ export async function POST(request: Request) {
                         status: 201
                     }
                 )
-        }
     } catch (error) {
         console.log("Error registering user", error)
         return new Response(

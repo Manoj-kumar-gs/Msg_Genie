@@ -7,26 +7,25 @@ import UserModel from "@/models/user";
 export const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
-            id: "Credentials",
             name: "credentials",
             credentials: {
-                username: { label: "Username", type: "text", placeholder: "enter username" },
-                email: { label: "Email", type: "text", placeholder: "enter email" },
-                password: { label: "Password", type: "password", placeholder: "enter password" }
+                identifier: { label: "Username/Email", type: "text", placeholder: "Enter Username/Email" },
+                password: { label: "Password", type: "password", placeholder: "Enter Password" }
             },
             async authorize(credentials: any): Promise<any> {
+              console.log(credentials)
                 await dbConnect()
                 try {
                     const user = await UserModel.findOne({
                         $or: [
-                            { username: credentials.username },
-                            { email: credentials.email },
+                            { username: credentials.identifier },
+                            { email: credentials.identifier },
                         ]
                     })
                     if (!user) {
                         throw new Error("User not found")
                     }
-                    if (user?.isVerified) {
+                    if (!user?.isVerified) {
                         throw new Error("Please verify your account before login")
                     }
                     const checkUserPassword = await bcrypt.compare(credentials.password, user?.password)
@@ -41,28 +40,28 @@ export const authOptions: NextAuthOptions = {
         })
     ],
     callbacks: {
-        async session({ session, user }) {
-            if (user) {
-                session._id = user._id;
-                session.username = user.username;
-                session.isVerified = user.isVerified;
-                session.isAcceptingMessages = user.isAcceptingMessages;
-            }
-            return session
-        },
         async jwt({ token, user }) {
             if (user) {
-                token._id = user._id;
+                token._id = user._id?.toString();
                 token.username = user.username;
                 token.isVerified = user.isVerified;
                 token.isAcceptingMessages = user.isAcceptingMessages;
             }
             return token
-        }
+        },
+        async session({ session, token }) {
+            if (token) {
+                session._id = token._id?.toString();
+                session.username = token.username;
+                session.isVerified = token.isVerified;
+                session.isAcceptingMessages = token.isAcceptingMessages;
+            }
+            return session;
+        },
     },
-    // pages: {
-    //     signIn: "/sign-in"
-    // },
+    pages: {
+        signIn: "/dashboard"
+    },
     session: {
         strategy: "jwt"
     }

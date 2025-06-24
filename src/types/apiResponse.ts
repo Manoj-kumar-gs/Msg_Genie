@@ -6,4 +6,4 @@ export interface ApiResponse{
     message : string;
     isAccepting? : boolean;
     messages? : Array<Message>;  
-} 
+}

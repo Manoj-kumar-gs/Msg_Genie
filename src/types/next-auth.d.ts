@@ -16,3 +16,12 @@ declare module "next-auth" {
         isAcceptingMessages?: boolean;
     }
 }
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    _id: string;
+    username: string;
+    isVerified?: boolean;
+    isAcceptingMessages?: boolean;
+  }
+}
