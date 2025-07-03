@@ -20,20 +20,36 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import { Message } from '@/models/user'
+import axios, { AxiosError } from 'axios'
+import { toast } from 'react-toastify'
+import { ApiResponse } from '@/types/apiResponse'
 
-const MessageCard = () => {
-    const handleDeleteMessage = ()=>{
-        
+type MessageCardProps = {
+message:Message,
+onDeleteMessage: (messageId: string)=>void
+}
+
+const MessageCard = ({message, onDeleteMessage} : MessageCardProps ) => {
+    const handleDeleteMessage = async ()=>{
+      try {
+        const response = await axios.delete<ApiResponse>(`api/delete-message/${message._id}`)
+          onDeleteMessage(`${message._id}`)
+          toast.success(`${response.data.message}`)
+      } catch (error) {
+        const axioxError = error as AxiosError<ApiResponse>
+        console.log("Error in deleting message",axioxError)
+        toast.error(`${axioxError.response?.data.message}`)
+      }
     }
   return (
-    <div>
-      <Card>
-  <CardHeader>
-    <CardTitle>Card Title</CardTitle>
-    <CardDescription>Card Description</CardDescription>
+      <Card className='w-[15vw]'>
+  <CardHeader className='space-y-4'>
+    <CardTitle>{message.suggester}</CardTitle>
+    <CardDescription>{message.content}</CardDescription>
       <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">Delete</Button>
+        <Button variant="destructive" className='cursor-pointer'>Delete</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -51,8 +67,8 @@ const MessageCard = () => {
     </AlertDialog>
   </CardHeader>
 </Card>
-    </div>
   )
 }
 
 export default MessageCard
+ 

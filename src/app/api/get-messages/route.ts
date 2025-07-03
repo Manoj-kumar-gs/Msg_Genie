@@ -22,19 +22,19 @@ export async function GET() {
     try {
         const user = await UserModel.aggregate([
             { $match: { _id: userId } },
-            { $unwind: '$messages' },
+            { $unwind: { path: '$messages', preserveNullAndEmptyArrays: true } },
             { $sort: { 'messages.createdAt': -1 } },
             { $group: { _id: '$_id', messages: { $push: '$messages' } } }
         ])
-        if(!user){
-        return Response.json({
-            success: false,
-            message: "user not found"
-        }, {
-            status: 401
-        })
+        if (!user) {
+            return Response.json({
+                success: false,
+                message: "user not found"
+            }, {
+                status: 401
+            })
         }
-        
+
         return Response.json({
             success: false,
             messages: user[0].messages

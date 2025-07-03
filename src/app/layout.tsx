@@ -4,7 +4,9 @@ import "./globals.css";
 import { ToastContainer } from 'react-toastify';
 import Navbar from "@/components/Navbar";
 import SessionWrapper from "./providers/SessionWrapper";
-
+import Footer from "@/components/Footer";
+// {/* <link rel="preconnect" href="https://fonts.googleapis.com"></link> */}
+// <link rel="preconnect" href="https://fonts.googleapis.com"></link>
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -27,18 +29,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          <SessionWrapper>
-        <div>
-        {/* <VerificationEmail/> */}
-        </div>
-        <div>
-          <Navbar/>
-          <ToastContainer position="bottom-right" theme="dark" />
-        {children}
-        </div>
+        className={`${geistSans.variable} ${geistMono.variable} antialiased max-w-[100vw]`}
+      >
+        <SessionWrapper>
+          <div>
+            {/* <VerificationEmail/> */}
+          </div>
+          <div >
+            <Navbar />
+            <ToastContainer position="bottom-right" theme="dark" />
+            <div className="min-h-[80vh]">
+            {children}
+            </div>
+          </div>
         </SessionWrapper>
       </body>
     </html>

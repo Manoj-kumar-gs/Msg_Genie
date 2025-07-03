@@ -30,25 +30,32 @@ const page = () => {
 
 const onSubmit = async (data: z.infer<typeof signInSchema>) => {
   setIsSubmiting(true)
-    const result = await signIn('credentials', {
-      redirect: false,
-      identifier: data.identifier,
-      password: data.password,
-    });
-    console.log(result)
-
-    if (result?.error) {
-      if (result.error === 'CredentialsSignin') {
-        toast('Incorrect username or password');
-      } else {
-        toast(`${result.error}`);
+    try {
+      const result = await signIn('credentials', {
+        redirect: false,
+        identifier: data.identifier,
+        password: data.password,
+      });
+      console.log(result)
+  
+      if (result?.error) {
+        if (result.error === 'CredentialsSignin') {
+          toast('Incorrect username or password');
+        } else {
+          toast(`${result.error}`);
+        }
       }
+  
+      if (result?.url) {
+        router.replace('/dashboard');
+      }
+    } catch (error) {
+      const axiosError = error as AxiosError
+      console.log("axioserror : ", axiosError)
+      toast.error(`Error signing in`)
+    }finally{
+      setIsSubmiting(false)
     }
-
-    if (result?.url) {
-      router.replace('/dashboard');
-    }
-    setIsSubmiting(false)
   };
 
 

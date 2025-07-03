@@ -2,16 +2,22 @@ import mongoose, { Document, Schema } from "mongoose";
 import { string } from "zod/v4";
 
 export interface Message extends Document {
+    suggester: string;
     content: string;
     createdAt: Date;
 }
 
 const messageSchema = new Schema<Message>({
-    content: {
+    suggester:{
         type: String,
         required: true,
+        default:"Well-Wisher"
     },
-    createdAt: { 
+    content: {
+        type: String, 
+        required: true,
+    },
+    createdAt: {
         type: Date,
         required: true,
         default: Date.now
@@ -48,7 +54,7 @@ const UserSchema = new Schema<User>({
     },
     verifyCode: {
         type: String,
-        required: true, 
+        required: true,
     },
     verifyCodeExpiry: {
         type: Date,

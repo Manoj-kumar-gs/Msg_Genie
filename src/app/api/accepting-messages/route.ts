@@ -22,19 +22,21 @@ export async function POST(request: Request) {
         const { acceptMessages } = await request.json();
         const user = await UserModel.findOneAndUpdate(
             { _id: userId },
-            { isAcceptingMessages: acceptMessages },
+            {
+                $set: { isAcceptingMessages: acceptMessages }
+            },
             { new: true }
         )
-        if(!user){
-             return Response.json({
-            success: false,
-            message: "Not Authenticated"
-        },
-            {
-                status: 401
-            })
+        if (!user) {
+            return Response.json({
+                success: false,
+                message: "Not Authenticated"
+            },
+                {
+                    status: 401
+                })
         }
-         return Response.json({
+        return Response.json({
             success: true,
             message: "Updated accept messages status successfully"
         },
@@ -54,7 +56,7 @@ export async function POST(request: Request) {
 
 
 
-export async function GET(request:Request) {
+export async function GET(request: Request) {
     await dbConnect();
     const session = await getServerSession(authOptions)
     if (!session) {
@@ -69,18 +71,18 @@ export async function GET(request:Request) {
     const userId = session._id
     try {
         const user = await UserModel.findById(userId);
-        if(!user){
+        if (!user) {
             return Response.json({
-            success: false,
-            message: "User not found"
-        },
-            {
-                status: 404
-            })
+                success: false,
+                message: "User not found"
+            },
+                {
+                    status: 404
+                })
         }
         return Response.json({
             success: true,
-            isAcceptingMessages : user.isAcceptingMessages
+            isAcceptingMessages: user.isAcceptingMessages
         },
             {
                 status: 200

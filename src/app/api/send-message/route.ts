@@ -1,9 +1,10 @@
 import dbConnect from "@/lib/dbConnect";
-import UserModel from "@/models/user";
+import UserModel, { Message } from "@/models/user";
 
 export async function POST(request: Request) {
   await dbConnect();
-  const { username, message } = await request.json();
+  const { suggesterName,username, message } = await request.json();
+  console.log(message, suggesterName)
 
   try {
     const user = await UserModel.findOneAndUpdate(
@@ -11,6 +12,7 @@ export async function POST(request: Request) {
       {
         $push: {
           messages: {
+            suggester: suggesterName || "Well-Wisher",
             content: message,
             createdAt: new Date()
           }
@@ -21,19 +23,19 @@ export async function POST(request: Request) {
 
     if (!user) {
       return Response.json(
-        { success: false, message: "User not found or not accepting messages" },
-        { status: 404 }
+        { success: false, message: "User not accepting messages" },
+        { status: 202 }
       );
     }
 
     return Response.json(
-      { success: true, message: "Message sent successfully" },
+      { success: true, message: `Message sent successfully` },
       { status: 200 }
     );
   } catch (error) {
     console.error("Error sending message:", error);
     return Response.json(
-      { success: false, message: "Server error" },
+      { success: false, message: "Failed to send suggestion" },
       { status: 500 }
     );
   }

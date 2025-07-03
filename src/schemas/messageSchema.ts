@@ -1,6 +1,8 @@
+import Suggester from "@/app/(app)/u/[username]/page";
 import { z } from "zod";
 
 export const messageSchema = z.object({
+    suggester: z.string(),
     content : z
     .string()
     .min(10, {message:"message must contain at least 10 characters"})
