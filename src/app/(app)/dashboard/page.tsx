@@ -100,19 +100,23 @@ const DashboardPage = () => {
 
   if (!data || !data?.user?.email) {
     return (
-      <div className='flex justify-center items-center w-[100vw] h-[90vh]'>
-        <div className='bg-slate-200 rounded-lg flex flex-col justify-center items-center gap-5 p-5 w-[20vw] h-[20vh]'>
+      <div className='flex justify-center items-center w-full h-[90vh]'>
+        <div className='bg-slate-200 rounded-lg flex flex-col justify-center items-center gap-5 p-5'>
           <div className='font-bold text-lg text-center w-[90%]'>Please Sign In To Access Your Dashboard</div>
           <Link href={"/sign-in"}>
             <button className='flex items-center gap-2 px-6 py-2 rounded-lg text-white font-semibold bg-indigo-600 shadow-md transition duration-100 ease-in-out transform active:scale-95 cursor-pointer hover:shadow-cyan-500'>Sign In</button>
           </Link>
+            <div className="flex gap-2">
+              <p>Not have an account?</p>
+              <Link href={"/sign-up"} className="text-blue-500">Sign-Up</Link>
+            </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className='w-[99vw] h-[100vh] flex flex-col justify-start items-start gap-7 p-8'>
+    <div className='w-[99vw] flex flex-col justify-start items-start gap-7 p-8'>
       <h1 className='font-extrabold text-3xl'>Your Dashboard</h1>
       <div className='flex flex-col justify-center items-start w-full'>
         <h2 className='font-bold text-[20px]'>Copy Your Link</h2>
@@ -160,7 +164,7 @@ const DashboardPage = () => {
       </div>
 
       {messages.length > 0 ? (
-        <div className="flex flex-wrap gap-4 justify-center">
+        <div className="grid grid-cols-3 w-full justify-center items-center place-items-center space-y-5">
           {messages.map((message, index) => (
             <MessageCard
               key={message._id as string}

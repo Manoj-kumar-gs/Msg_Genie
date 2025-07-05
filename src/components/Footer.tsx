@@ -7,9 +7,9 @@ const Footer = () => {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-black text-white w-full border-t border-gray-700 flex justify-around items-center h-[10vh]">
+    <footer className="bg-black text-white w-full border-t border-gray-700 flex justify-around items-center md:h-[10vh]">
       <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex flex-col md:flex-row items-center gap-2">
+        <div className="flex md:flex-row items-center gap-2">
           <span className="text-xl font-bold">SuggestUsingAI</span>
           <p className="text-sm text-gray-400">Enhance your conversations with AI.</p>
         </div>

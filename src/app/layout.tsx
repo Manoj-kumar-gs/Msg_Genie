@@ -30,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased max-w-[100vw]`}
@@ -43,8 +43,9 @@ export default function RootLayout({
             <Navbar />
             <ToastContainer position="bottom-right" theme="dark" />
             <div className="min-h-[80vh]">
-            {children}
+              {children}
             </div>
+            <Footer />
           </div>
         </SessionWrapper>
       </body>
