@@ -24,6 +24,25 @@ export async function POST(request: Request) {
             const verifyCode = Math.floor(100000 + Math.random() * 900000).toString()
             const verifyCodeExpiry = new Date();
             verifyCodeExpiry.setHours(verifyCodeExpiry.getHours() + 1)
+            
+                // const emailResponse = await sendVerificationEmail(
+                //     username,
+                //     email,
+                //     verifyCode,
+                // )
+
+                // if (!emailResponse.success) {
+                //     return Response.json(
+                //         {
+                //             success: false,
+                //             message: "email not sent"
+                //         },
+                //         {
+                //             status: 500
+                //         }
+                //     )
+                // }
+
             if(existingUserByEmail){
                 
             if(existingUserByEmail.isVerified){
@@ -67,23 +86,6 @@ export async function POST(request: Request) {
                     messages: []
                 })
                 await newUser.save()
-                // const emailResponse = await sendVerificationEmail(
-                //     username,
-                //     email,
-                //     verifyCode,
-                // )
-
-                // if (!emailResponse.success) {
-                //     return Response.json(
-                //         {
-                //             success: false,
-                //             message: "email not sent"
-                //         },
-                //         {
-                //             status: 500
-                //         }
-                //     )
-                // }
                 
                 return Response.json(
                     {
