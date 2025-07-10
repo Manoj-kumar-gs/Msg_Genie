@@ -5,15 +5,21 @@ import { redirect } from "next/navigation";
 export async function POST(req: Request) {
     try {
         await dbConnect();
-        const { username, verificationCode } = await req.json();
-        const user = await UserModel.findOne({ username });
+        const { identifier, verificationCode } = await req.json();
+        console.log("valid Identifier received:", identifier, verificationCode);
+          const user = await UserModel.findOne({
+                        $or: [
+                            { username: identifier },
+                            { email: identifier },
+                        ]
+                    })
 
         if (!user) {
             return Response.json({
                 success: false,
                 message: "User not found"
             }, {
-                status: 404
+                status: 400
             });
         }
         if(user.verifyCodeExpiry < new Date()) {
@@ -33,7 +39,10 @@ export async function POST(req: Request) {
             });
         }
 
-       redirect(`/reset-password/${username}`);
+       return Response.json({
+            success: true,
+            message: "User verified successfully"
+        });
 
     } catch (error) {
         console.log("Error checking user validity", error);

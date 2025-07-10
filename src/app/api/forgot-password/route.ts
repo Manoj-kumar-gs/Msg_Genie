@@ -6,12 +6,28 @@ import { success } from "zod/v4";
 
 export async function POST(req: Request) {
     try {
-        const username = await req.json();
+        const {identifier} = await req.json();
+        console.log("Identifier received:", identifier);
 
         const verifyCode = Math.floor(100000 + Math.random() * 900000).toString()
         const verifyCodeExpiry = new Date();
-
         verifyCodeExpiry.setHours(verifyCodeExpiry.getHours() + 1)
+
+        await dbConnect();
+        const user = await UserModel.findOne({
+                        $or: [
+                            { username: identifier },
+                            { email: identifier },
+                        ]
+                    })
+        if (!user) {
+            return Response.json({
+                success:false,
+                message:"user not found"
+            },{
+                status:400
+            })
+            
                 // const emailResponse = await sendVerificationEmail(
                 //     username,
                 //     email,
@@ -29,28 +45,23 @@ export async function POST(req: Request) {
                 //         }
                 //     )
                 // }
-
-        await dbConnect();
-        const user = await UserModel.findOne({ username })
-        if (!user) {
-            return Response.json({
-                success:false,
-                message:"user not found"
-            },{
-                status:400
-            })
         }
 
         user.verifyCode = verifyCode;
         user.verifyCodeExpiry = verifyCodeExpiry;
         await user.save();
         
-        redirect(`verify-user/${username}`)
+        return Response.json({
+            success:true,
+            message:"Verification code sent successfully"
+        },{
+            status:200
+        })
 
     } catch (error) {
         return Response.json({
             success:false,
-            message:"Failed to reset password"
+            message:"error to send reset password email"
         },{
             status:500
         })

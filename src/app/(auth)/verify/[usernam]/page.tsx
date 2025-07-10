@@ -15,7 +15,7 @@ import { Loader } from 'lucide-react'
 const page = () => {
   const [verifying, setverifying] = useState(false)
   const params = useParams()
-  console.log(params, params.usernam)
+      const router = useRouter()
   const form = useForm<z.infer<typeof verifySchema>>({
     resolver: zodResolver(verifySchema),
     defaultValues: {
@@ -31,8 +31,7 @@ const page = () => {
         verifyCode: { code: data.code }
       })
       toast(`${response?.data.message}`)
-      // const router = useRouter()
-      // router.replace('/')
+      router.replace('/dashboard')
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>
       console.error("error verifying user using verification code", error)

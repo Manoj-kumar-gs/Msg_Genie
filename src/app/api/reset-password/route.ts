@@ -4,17 +4,21 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
     try {
-        const { newPassword, checkNewPassword, username } = await req.json();
-        if (newPassword !== checkNewPassword) {
+        const { newPassword, identifier } = await req.json();
+        await dbConnect();
+        const user = await UserModel.findOne({ $or: [
+            { username: identifier },
+            { email: identifier }
+        ]});
+
+        if (!user) {
             return Response.json({
                 success: false,
-                message: "Passwords do not match"
+                message: "User not found"
             }, {
-                status: 400
+                status: 404
             });
         }
-        await dbConnect();
-        const user = await UserModel.findOne({ username });
         const isSame = await bcrypt.compare(newPassword, user.password);
 
         if (isSame) {

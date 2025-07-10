@@ -25,23 +25,23 @@ export async function POST(request: Request) {
             const verifyCodeExpiry = new Date();
             verifyCodeExpiry.setHours(verifyCodeExpiry.getHours() + 1)
             
-                // const emailResponse = await sendVerificationEmail(
-                //     username,
-                //     email,
-                //     verifyCode,
-                // )
+                const emailResponse = await sendVerificationEmail(
+                    username,
+                    email,
+                    verifyCode,
+                )
 
-                // if (!emailResponse.success) {
-                //     return Response.json(
-                //         {
-                //             success: false,
-                //             message: "email not sent"
-                //         },
-                //         {
-                //             status: 500
-                //         }
-                //     )
-                // }
+                if (!emailResponse.success) {
+                    return Response.json(
+                        {
+                            success: false,
+                            message: "email not sent"
+                        },
+                        {
+                            status: 500
+                        }
+                    ) 
+                }
 
             if(existingUserByEmail){
                 
