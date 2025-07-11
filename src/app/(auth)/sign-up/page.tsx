@@ -133,7 +133,7 @@ const page = () => {
                         <button type="submit" disabled={isSubmiting} className="bg-gray-950 w-[80%] p-3 rounded-lg text-white font-semibold cursor-pointer transition duration-200 ease-in-out active:scale-95 active:bg-gray-700 hover:shadow-md hover:shadow-gray-500">
                             {isSubmiting ? (
                                 <>
-                                    <div className="flex justify-center items-center">
+                                    <div className="flex justify-center items-center gap-2">
                                         <Loader className="animate-spin" />
                                         <p>Please Wait</p>
                                     </div>

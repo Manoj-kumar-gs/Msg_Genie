@@ -10,10 +10,10 @@ import axios, { AxiosError } from 'axios'
 import { Copy, Loader, RefreshCcw, RefreshCcwIcon } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import { tr } from 'zod/v4/locales'
 
 const DashboardPage = () => {
   const [messages, setMessages] = useState<Message[]>([])
@@ -21,6 +21,7 @@ const DashboardPage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [profileURL, setProfileURL] = useState('')
   const [copied, setCopied] = useState(false)
+  const router = useRouter()
   const { data, status } = useSession()
   const username = data?.username
 
@@ -98,22 +99,6 @@ const DashboardPage = () => {
     })
   }
 
-  if (!data || !data?.user?.email) {
-    return (
-      <div className='flex justify-center items-center w-full h-[90vh]'>
-        <div className='bg-slate-200 rounded-lg flex flex-col justify-center items-center gap-5 p-5'>
-          <div className='font-bold text-lg text-center w-[90%]'>Please Sign In To Access Your Dashboard</div>
-          <Link href={"/sign-in"}>
-            <button className='flex items-center gap-2 px-6 py-2 rounded-lg text-white font-semibold bg-indigo-600 shadow-md transition duration-100 ease-in-out transform active:scale-95 cursor-pointer hover:shadow-cyan-500'>Sign In</button>
-          </Link>
-            <div className="flex gap-2">
-              <p>Not have an account?</p>
-              <Link href={"/sign-up"} className="text-blue-500">Sign-Up</Link>
-            </div>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div className='w-[99vw] flex flex-col justify-start items-start gap-7 p-8'>

@@ -1,24 +1,40 @@
-import VerificationEmail from "../../emailTemplates/verificationEmail";
-import { resend } from "@/lib/resend";
-import { ApiResponse } from "@/types/apiResponse";
+import nodemailer from 'nodemailer';
+import { render } from '@react-email/render';
+import VerificationEmail from '@/emailTemplates/verificationEmail';
+import { ApiResponse } from '@/types/apiResponse';
 
 export default async function sendVerificationEmail(
-    username: string,
-    email: string,
-    verificationCode: string,
-): Promise<ApiResponse> { //defines return type
+  username: string,
+  email: string,
+  verificationCode: string
+): Promise<ApiResponse> {
+  try {
+    // 1. Create transporter
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
+      },
+    });
 
-    try {
-        const resentemail = await resend.emails.send({
-            from: 'onboarding@resend.dev',
-            to: email,
-            subject: 'Message With AI | Verification code',
-            react: VerificationEmail({username, otp:verificationCode}),
-        });
-        console.log("resendEmail : ",resentemail)
-        return { success: true, message: "Verification email send successfully" }
-    } catch (emailError) { 
-        console.log("error in verifying your email", emailError)
-        return { success: false, message: "error" }
-    } 
-} 
+    // 2. Render your React email to HTML
+    const htmlContent = await render(
+      VerificationEmail({ username, otp: verificationCode })
+    );
+
+    // 3. Send the email
+    const info = await transporter.sendMail({
+      from: process.env.GMAIL_USER,
+      to: email,
+      subject: 'Message With AI | Verification code',
+      html: htmlContent,
+    });
+
+    console.log('Email sent: ', info.response, info);
+    return { success: true, message: 'Verification email sent successfully' };
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return { success: false, message: 'Failed to send email' };
+  }
+}

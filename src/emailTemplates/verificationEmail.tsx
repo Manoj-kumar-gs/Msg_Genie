@@ -8,6 +8,7 @@ import {
   Row,
   Section,
   Text,
+  Button,
 } from '@react-email/components';
 
 interface VerificationEmailProps {
@@ -31,7 +32,7 @@ export default function VerificationEmail({ username, otp }: VerificationEmailPr
           fontStyle="normal"
         />
       </Head>
-      <Preview>Here&apos;s your verification code: {otp}</Preview>
+      <Preview>Here's your verification code: {otp}</Preview>
       <Section>
         <Row>
           <Heading as="h2">Hello {username},</Heading>
@@ -43,22 +44,29 @@ export default function VerificationEmail({ username, otp }: VerificationEmailPr
           </Text>
         </Row>
         <Row>
-          <Text>{otp}</Text> 
+          <Text><strong>{otp}</strong></Text>
+        </Row>
+        <Row>
+          <Text>
+            ⚠️ <strong>Note:</strong> This verification code will expire in <strong>1 hour</strong>.
+          </Text>
         </Row>
         <Row>
           <Text>
             If you did not request this code, please ignore this email.
           </Text>
         </Row>
-        {/* <Row>
+        <Row>
           <Button
-            href={`http://localhost:3000/verify/${username}`}
+            href={`${process.env.NEXT_PUBLIC_APP_URL}/verify/${encodeURIComponent(
+              username,
+            )}?c=${encodeURIComponent(otp)}`}
             style={{ color: '#61dafb' }}
           >
             Verify here
           </Button>
-        </Row> */}
-      </Section> 
+        </Row>
+      </Section>
     </Html>
-  ); 
+  );
 }

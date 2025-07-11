@@ -30,10 +30,7 @@ const Navbar = () => {
         (<>
           <div className='flex gap-4 justify-center items-center'>
             <Link href={"/sign-in"}>
-              <button className='flex items-center gap-2 px-6 py-2 rounded-lg text-white font-semibold shadow-md transition duration-100 ease-in-out transform active:scale-95 cursor-pointer bg-indigo-600 hover:shadow-cyan-500'
-                onClick={() => {
-                  signIn();
-                }}>Sign In</button>
+              <button className='flex items-center gap-2 px-6 py-2 rounded-lg text-white font-semibold shadow-md transition duration-100 ease-in-out transform active:scale-95 cursor-pointer bg-indigo-600 hover:shadow-cyan-500'>Sign In</button>
             </Link>
             <Link href={"/sign-up"}>
               <button className='flex items-center gap-2 px-6 py-2 rounded-lg text-white font-semibold shadow-md transition duration-100 ease-in-out transform active:scale-95 cursor-pointer bg-indigo-600 hover:shadow-cyan-500'>Sign Up</button>

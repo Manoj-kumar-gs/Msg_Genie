@@ -1,8 +1,8 @@
 'use client'
 import axios, { AxiosError } from 'axios'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { ApiResponse } from "@/types/apiResponse"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -13,33 +13,50 @@ import { Input } from '@/components/ui/input'
 import { Loader } from 'lucide-react'
 
 const page = () => {
-  const [verifying, setverifying] = useState(false)
   const params = useParams()
-      const router = useRouter()
-  const form = useForm<z.infer<typeof verifySchema>>({
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const usernameFromLink = params.usernam;   
+  const codeFromLink = searchParams.get('c');     
+
+  const [verifying, setVerifying] = useState(false);
+
+  const form = useForm({
     resolver: zodResolver(verifySchema),
-    defaultValues: {
-      code: ''
-    }
-  })
-  const onSubmit = async (data: z.infer<typeof verifySchema>) => {
-    console.log(data)
-    setverifying(true);
+    defaultValues: { code: codeFromLink ?? '' },    // pre‑fill when arriving via link
+  });
+
+  /** Shared verify call.
+   *  - Works for both auto‑submit and manual form submit */
+  const verifyUser = async (code: string) => {
+    if (!usernameFromLink) return; // should never happen if link is correct
+    setVerifying(true);
     try {
-      const response = await axios.post('/api/check-user-isVerified', {
-        username: params.usernam,
-        verifyCode: { code: data.code }
-      })
-      toast(`${response?.data.message}`)
-      router.replace('/dashboard')
-    } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse>
-      console.error("error verifying user using verification code", error)
-      toast.error(`${axiosError.response?.data.message}`)
+      const { data } = await axios.post('/api/check-user-isVerified', {
+        username: usernameFromLink,
+        verifyCode: { code },
+      });
+      toast.success(data.message);
+      router.replace('/dashboard');
+    } catch (err) {
+      const axiosErr = err as AxiosError<ApiResponse>;
+      toast.error(axiosErr.response?.data.message ?? 'Verification failed');
     } finally {
-      setverifying(false)
+      setVerifying(false);
     }
-  }
+  };
+
+  /** Normal form handler */
+  const onSubmit = async (values: z.infer<typeof verifySchema>) => {
+    await verifyUser(values.code);
+  };
+
+  /** 🚀 Auto‑submit immediately if we have both params */
+  useEffect(() => {
+    if (usernameFromLink && codeFromLink) {
+      verifyUser(codeFromLink);
+    }
+  }, [usernameFromLink, codeFromLink]);
   return (
     <div className="bg-white flex justify-center items-center h-[100vh]">
       <div className="bg-slate-50 p-8 flex flex-col justify-center items-center rounded-lg">
@@ -58,11 +75,11 @@ const page = () => {
                 </FormItem>
               )}
             />
-            <button type='submit' className="bg-gray-500 w-30 p-3 rounded-lg text-white font-semibold cursor-pointer" disabled={verifying}>{verifying ? (
+            <button type='submit' className="bg-gray-500 p-3 rounded-lg text-white font-semibold cursor-pointer" disabled={verifying}>{verifying ? (
               <>
-                <div className="flex justify-center items-center">
+                <div className="flex justify-center items-center gap-2">
                   <Loader className="animate-spin" />
-                  <p>Verifying</p>
+                  <p>Verifying...</p>
                 </div>
               </>
             ) : (<>
