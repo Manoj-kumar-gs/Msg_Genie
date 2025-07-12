@@ -1,81 +1,114 @@
 'use client';
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
-import { useParams } from 'next/navigation';
-import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import { useParams, useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
+import { Loader } from 'lucide-react';
 
 const page = () => {
-  const {username} = useParams() as {username: string};
-  console.log("Username from params:", username);
+  const { username } = useParams() as { username: string };
   const [verifying, setVerifying] = useState(false);
   const router = useRouter();
 
   const verificationCodeSchema = z.object({
-    verificationCode: z.string()
-      .length(6, "Verification code must be 6 characters")
-      .min(1, "Verification code is required")
+    verificationCode: z
+      .string()
+      .length(6, 'Verification code must be 6 characters'),
   });
+
   const form = useForm<z.infer<typeof verificationCodeSchema>>({
     resolver: zodResolver(verificationCodeSchema),
     mode: 'onChange',
     defaultValues: {
-      verificationCode: ''
-    }
+      verificationCode: '',
+    },
   });
 
   const onSubmit = async (data: z.infer<typeof verificationCodeSchema>) => {
-    console.log("Form submitted with data:", data);
-    setVerifying(true)
+    setVerifying(true);
     try {
-      const verificationCode = data.verificationCode;
-      const response = await axios.post(`/api/check-user-isValid/`,
-        {
-          verificationCode,
-          identifier : username.replace('%40', '@')
-        });
+      const response = await axios.post(`/api/check-user-isValid/`, {
+        verificationCode: data.verificationCode,
+        identifier: username.replace('%40', '@'),
+      });
+      toast.success('Code verified successfully');
       router.push(`/reset-password/${username}`);
     } catch (error: any) {
-      console.log("Error submitting form:", error);
-      toast.error(`${error.response?.data?.message || "An error occurred"}`);
+      toast.error(
+        error.response?.data?.message || 'Verification failed'
+      );
     } finally {
       setVerifying(false);
     }
-  }
+  };
+
   return (
-    <div className="flex flex-col justify-center items-center gap-10 h-[80vh] w-[99vw] space-y-4">
-      <div className='flex flex-col justify-center items-center space-y-2'>
-      <div className='text-2xl font-bold'>Verification Page</div>
-      <p className='font-semibold'>Please enter the verification code sent to your email.</p>
+    <div className="h-[80vh] flex items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-slate-100 px-4">
+      <div className="bg-white border border-slate-200 shadow-xl rounded-xl p-8 w-full max-w-md flex flex-col items-center">
+        <h2 className="text-2xl font-bold text-indigo-700 mb-2">
+          Verify Your Identity
+        </h2>
+        <p className="text-sm text-gray-600 mb-6 text-center">
+          Please enter the 6-digit verification code sent to your email.
+        </p>
+
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6 w-full"
+          >
+            <FormField
+              control={form.control}
+              name="verificationCode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm text-gray-700">
+                    Verification Code
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      className="w-full border-gray-300 focus-visible:ring-indigo-500"
+                      placeholder="Enter 6-digit code"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <button
+              type="submit"
+              className="w-full bg-indigo-600 cursor-pointer text-white font-medium py-2 rounded-lg shadow-md hover:shadow-cyan-500 transition duration-150 disabled:opacity-60 disabled:cursor-not-allowed"
+              disabled={verifying}
+            >
+              {verifying ? (
+                <div className="flex justify-center items-center gap-2">
+                  <Loader className="animate-spin" />
+                  Verifying...
+                </div>
+              ) : (
+                'Verify'
+              )}
+            </button>
+          </form>
+        </Form>
       </div>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex flex-col justify-center items-start w-[70%]">
-          <FormField
-            control={form.control}
-            name="verificationCode"
-            render={({ field }) => (
-              <FormItem className="w-full flex justify-center items-start flex-col gap-4">
-                <FormLabel>Verification Code</FormLabel>
-                <FormControl>
-                  <Input className="w-full" placeholder="Enter Verification Code" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <button type="submit" className={`bg-gray-950 p-3 rounded-lg text-white font-semibold cursor-pointer transition duration-200 ease-in-out active:scale-95 active:bg-gray-700 hover:shadow-md hover:shadow-gray-500 disabled:opacity-50 disabled:cursor-not-allowed`} disabled={verifying}>
-            {verifying ? "Verifying..." : "Verify"}
-          </button>
-        </form>
-      </Form>
-
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default page;

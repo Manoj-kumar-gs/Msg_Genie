@@ -42,7 +42,7 @@ export default function RootLayout({
           <div >
             <Navbar />
             <ToastContainer position="bottom-right" theme="dark" />
-            <div className="min-h-[80vh]">
+            <div className="min-h-[80vh] w-full">
               {children}
             </div>
             <Footer />

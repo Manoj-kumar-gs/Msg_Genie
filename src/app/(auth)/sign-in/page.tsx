@@ -17,8 +17,21 @@ import Link from "next/link"
 
 const page = () => {
   const [isSubmiting, setIsSubmiting] = useState(false)
+  const [routing, setrouting] = useState(false)
 
   const router = useRouter();
+
+  const routingHandler = async (path: string) => {
+    try {
+      setrouting(true);
+      setTimeout(() => {
+        router.replace(path);
+        setrouting(false);
+      })
+    } catch (error) {
+      console.error("Error occurred while routing:", error);
+    }
+  };
 
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
@@ -45,9 +58,9 @@ const page = () => {
           toast(`${result.error}`);
         }
       }
-
-      if (result?.url) {
-        router.replace('/dashboard');
+      if (result?.ok) {
+        toast('Signed in successfully');
+        routingHandler('/dashboard');
       }
     } catch (error) {
       const axiosError = error as AxiosError
@@ -60,9 +73,9 @@ const page = () => {
 
 
   return (
-    <div className="bg-white flex justify-center items-center min-h-[80vh]">
-      <div className="w-[50%] flex justify-center items-center">
-        <div className="bg-slate-50 p-8 flex flex-col justify-center items-start rounded-lg w-[50%]">
+    <div className="bg-white flex md:flex-row flex-col justify-center items-center gap-4 min-h-[80vh]">
+      <div className="w-full md:w-[50%] flex justify-center items-center">
+        <div className="bg-slate-50 p-8 flex flex-col justify-center items-start rounded-lg min-w-[85%] md:min-w-[50%]">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full flex flex-col justify-center items-start">
               <FormField
@@ -95,9 +108,9 @@ const page = () => {
               <button type="submit" disabled={isSubmiting} className="bg-gray-950 p-3 w-[80%] rounded-lg text-white font-semibold cursor-pointer transition duration-200 ease-in-out active:scale-95 active:bg-gray-700 hover:shadow-md hover:shadow-gray-500">
                 {isSubmiting ? (
                   <>
-                    <div className="flex justify-center items-center">
+                    <div className="flex justify-center items-center gap-2">
                       <Loader className="animate-spin" />
-                      <p>Please Wait</p>
+                      <p>Please Wait...</p>
                     </div>
                   </>
                 ) : (
@@ -112,7 +125,6 @@ const page = () => {
               </div>
             </form>
           </Form>
-
           <div className="flex flex-col justify-center items-start mt-4 gap-3 w-full">
             <button onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
               className="hover:cursor-pointer flex items-center bg-white border border-gray-300 rounded-lg shadow-md w-[80%] px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
@@ -166,7 +178,7 @@ const page = () => {
         </div>
       </div>
 
-      <div className="flex flex-col justify-center items-center gap-10 w-[50%]">
+      <div className="flex flex-col justify-center items-center gap-10 w-full md:w-[50%]">
         <div className="flex flex-col justify-center items-center">
           <h1 className="text-3xl font-bold text-center">
             Let the world message you.
