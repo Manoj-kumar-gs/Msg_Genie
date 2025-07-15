@@ -60,16 +60,16 @@ export default function Home() {
           </div>
 
           {/* Carousel */}
-          <div className="w-[90%] md:w-full max-w-md box-border">
-            <Carousel className="w-[95%] md:w-full" plugins={[autoplayPlugin.current]}>
+          <div className="w-[80%] md:w-full max-w-md box-border">
+            <Carousel className="w-[100%] md:w-full" plugins={[autoplayPlugin.current]}>
               <CarouselContent>
                 {messages.map((message, index) => (
                   <CarouselItem key={index}>
-                    <Card className="w-[100%] h-full flex flex-col justify-between px-2 py-4 md:px-4 md:py-6 text-center shadow-md border">
+                    <Card className="w-[100%] h-full cursor-pointer flex flex-col justify-between px-2 py-4 md:px-4 md:py-6 text-center shadow-md border">
                       <div className="font-semibold text-indigo-700 text-lg">
                         {message.title}
                       </div>
-                      <CardContent className="flex-grow flex items-center justify-center p-0 md:px-4">
+                      <CardContent className="flex-grow flex items-center justify-center p-0 md:px-4 cursor-pointer">
                         <span className="text-xl font-medium text-gray-800 break-words">
                           {message.content}
                         </span>
@@ -81,8 +81,8 @@ export default function Home() {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
+              <CarouselPrevious className="cursor-pointer" />
+              <CarouselNext className="cursor-pointer" />
             </Carousel>
           </div>
         </section>

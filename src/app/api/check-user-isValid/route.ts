@@ -1,12 +1,12 @@
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/user";
+import { console } from "inspector";
 import { redirect } from "next/navigation";
 
 export async function POST(req: Request) {
     try {
         await dbConnect();
         const { identifier, verificationCode } = await req.json();
-        console.log("valid Identifier received:", identifier, verificationCode);
           const user = await UserModel.findOne({
                         $or: [
                             { username: identifier },

@@ -50,15 +50,12 @@ const UserSchema = new Schema<User>({
     },
     password: {
         type: String,
-        required: true,
     },
     verifyCode: {
         type: String,
-        required: true,
     },
     verifyCodeExpiry: {
         type: Date,
-        required: true,
     },
     isVerified: {
         type: Boolean,

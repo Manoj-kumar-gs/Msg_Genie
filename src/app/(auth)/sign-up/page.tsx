@@ -45,11 +45,14 @@ const SignUpPage = () => {
       });
     } catch (error) {
       console.error("Error occurred while routing:", error);
+    }finally{
+      setRouting(false);
     }
   };
 
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
+    mode: 'onChange',
     defaultValues: {
       username: "",
       email: "",
@@ -67,6 +70,7 @@ const SignUpPage = () => {
             `/api/check-username-unique?username=${username}`
           );
           setUsernameMessage(response.data.message);
+          
         } catch (error) {
           const axiosError = error as AxiosError<ApiResponse>;
           setUsernameMessage(
@@ -84,19 +88,21 @@ const SignUpPage = () => {
     setIsSubmitting(true);
     try {
       const response = await axios.post("/api/sign-up", data);
-      toast.success(`${response.data.message}`);
-      /** ✅ After sign‑up, send user to verify page using the new handler */
-      routingHandler(`/verify/${data.username}`);
+      if (response.status === 201) {
+        toast.success("Account created successfully!");
+        routingHandler(`/verify/${data.username}`);
+      }
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       toast.error(`${axiosError.response?.data.message}`);
+    }finally{
       setIsSubmitting(false);
     }
   };
-
+ 
   return (
     <div className="bg-white flex md:flex-row flex-col justify-center items-center min-h-[80vh] py-2">
-      <div className="bg-slate-50 p-8 flex flex-col justify-center items-start rounded-lg min-w-[85%] md:min-w-[30%] my-auto">
+      <div className="bg-slate-50 p-8 flex flex-col justify-center items-start rounded-lg min-w-[85%] md:min-w-[25%] my-auto">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -202,54 +208,6 @@ const SignUpPage = () => {
             </div>
           </form>
         </Form>
-
-        <div className="flex flex-col justify-center items-start mt-4 gap-3 w-full">
-          <button
-            onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-            className="hover:cursor-pointer flex items-center bg-indigo-50 border border-gray-300 rounded-lg shadow-md w-[80%] px-6 py-2 text-sm font-medium text-gray-800 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-100 active:scale-95"
-          >
-            {/* Google SVG */}
-            <svg
-              className="h-6 w-6 mr-2"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="-0.5 0 48 48"
-            >
-              <path
-                fill="#FBBC05"
-                d="M9.827 24c0-1.524.253-2.986.705-4.356L2.623 13.604A23.79 23.79 0 000 24c0 3.737.868 7.262 2.407 10.389l7.904-6.051A14.15 14.15 0 019.827 24z"
-              />
-              <path
-                fill="#EA4335"
-                d="M23.714 10.133c3.311 0 6.302 1.173 8.652 3.093l6.836-6.827C35.036 2.773 29.695.533 23.714.533 14.427.533 6.445 5.844 2.623 13.604l7.909 6.04C12.355 14.112 17.549 10.133 23.714 10.133z"
-              />
-              <path
-                fill="#34A853"
-                d="M23.714 37.867c-6.164 0-11.359-3.978-13.181-9.51l-7.909 6.039c3.822 7.761 11.804 13.072 21.09 13.072 5.732 0 11.204-2.035 15.311-5.848l-7.507-5.804c-2.118 1.334-4.785 2.052-7.804 2.052z"
-              />
-              <path
-                fill="#4285F4"
-                d="M46.145 24c0-1.387-.214-2.88-.534-4.267H23.714v9.066h12.604c-.63 3.091-2.346 5.468-4.801 7.015l7.508 5.804C43.34 37.614 46.145 31.649 46.145 24z"
-              />
-            </svg>
-            Continue with Google
-          </button>
-
-          <button
-            onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
-            className="hover:cursor-pointer flex items-center bg-indigo-50 border border-gray-300 rounded-lg shadow-md w-[80%] px-6 py-2 text-sm font-medium text-gray-800 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-100 active:scale-95"
-          >
-            {/* GitHub SVG (minimal) */}
-            <svg
-              className="h-6 w-6 mr-2"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M12 .5a12 12 0 00-3.788 23.4c.6.11.82-.26.82-.577v-2.1c-3.338.724-4.042-1.61-4.042-1.61a3.182 3.182 0 00-1.335-1.756c-1.09-.745.084-.73.084-.73a2.518 2.518 0 011.835 1.235 2.55 2.55 0 003.485.997 2.564 2.564 0 01.763-1.61c-2.665-.3-5.467-1.332-5.467-5.93a4.642 4.642 0 011.238-3.215 4.307 4.307 0 01.117-3.176s1-.32 3.285 1.23a11.38 11.38 0 016 0c2.285-1.55 3.285-1.23 3.285-1.23a4.307 4.307 0 01.117 3.176 4.64 4.64 0 011.238 3.215c0 4.61-2.807 5.626-5.479 5.92a2.874 2.874 0 01.823 2.224v3.29c0 .323.218.694.824.576A12 12 0 0012 .5" />
-            </svg>
-            Continue with GitHub
-          </button>
-        </div>
       </div>
 
       <div className="flex flex-col justify-center items-center gap-10 w-full md:w-[50%]">
@@ -315,7 +273,7 @@ const SignUpPage = () => {
               <span>Continue with Github</span>
             </button>
           </div>
-          <div className=" text-gray-500 mt-2 flex justify-center items-center gap-2">
+          <div className=" text-gray-500 mt-2 flex justify-center items-center gap-2 pb-2">
             <Link href={"/sign-up"} className="text-blue-500 hover:underline hover:text-blue-600">Sign Up</Link> <p className="font-semibold"> to get started. </p>
           </div>
         </div>

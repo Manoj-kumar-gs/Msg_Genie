@@ -4,7 +4,6 @@ import UserModel, { Message } from "@/models/user";
 export async function POST(request: Request) {
   await dbConnect();
   const { suggesterName,username, message } = await request.json();
-  console.log(message, suggesterName)
 
   try {
     const user = await UserModel.findOneAndUpdate(

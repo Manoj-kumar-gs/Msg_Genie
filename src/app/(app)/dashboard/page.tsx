@@ -51,9 +51,8 @@ const DashboardPage = () => {
     try {
       const response = await axios.get('api/get-messages')
       setMessages(response.data.messages ?? [])
-      console.log("messages : ", messages)
       if (refresh) {
-        toast('Messages refreshed successfully')
+        toast.success('Messages refreshed successfully')
       }
     } catch (error) {
       const axiosError = error as AxiosError
@@ -78,7 +77,7 @@ const DashboardPage = () => {
       setIsSwitchLoading(false)
     }
   }
-
+ 
   useEffect(() => {
     const baseUrl = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`
     setProfileURL(`${baseUrl}/u/${username}`)
@@ -145,11 +144,11 @@ const DashboardPage = () => {
               <RefreshCcw className='hover:cursor-pointer' />
             </>
           )}
-        </Button>
+        </Button> 
       </div>
 
       {messages.length > 0 ? (
-        <div className="grid grid-cols-3 w-full justify-center items-center place-items-center space-y-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 w-full justify-center items-center place-items-center space-y-5">
           {messages.map((message, index) => (
             <MessageCard
               key={message._id as string}

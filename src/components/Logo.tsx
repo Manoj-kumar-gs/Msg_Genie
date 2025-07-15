@@ -8,12 +8,12 @@ type MsgGenieProps = {
 const MsgGenie: React.FC<MsgGenieProps> = ({ onClick }) => {
   return (
     <div
-      className="text-[22px] md:text-3xl font-bold shadow-md shadow-indigo-500 w-fit cursor-pointer"
+      className="text-[22px] md:text-2xl font-bold w-fit cursor-pointer"
       onClick={onClick}
     >
       <span className='text-indigo-600'>&lt;</span>MsgGenie <span className='text-indigo-600'>/&gt;</span>
     </div>
   );
 };
-
+ 
 export default MsgGenie;

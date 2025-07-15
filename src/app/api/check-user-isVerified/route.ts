@@ -14,9 +14,7 @@ export async function POST(request: Request) {
     await dbConnect();
     try {
         const body = await request.json()
-        console.log("body : ", body)
         const result = userCodeVerifySchema.safeParse(body)
-        console.log("result : ", result)
         if (!result.success) {
             console.error(result.error.flatten());
             return Response.json(
@@ -30,7 +28,6 @@ export async function POST(request: Request) {
         }
 
         const { username, verifyCode } = result.data;
-        console.log( "verifyication code : ", verifyCode.code)
 
         const user = await UserModel.findOne({ username: username })
         if (!user) {
@@ -67,7 +64,7 @@ export async function POST(request: Request) {
             },
                 { status: 400 })
         }
-
+ 
         user.isVerified = true;
         await user.save()
         return Response.json({

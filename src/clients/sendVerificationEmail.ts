@@ -31,7 +31,6 @@ export default async function sendVerificationEmail(
       html: htmlContent,
     });
 
-    console.log('Email sent: ', info.response, info);
     return { success: true, message: 'Verification email sent successfully' };
   } catch (error) {
     console.error('Error sending email:', error);

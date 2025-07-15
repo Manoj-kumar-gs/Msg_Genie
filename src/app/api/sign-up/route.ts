@@ -25,23 +25,7 @@ export async function POST(request: Request) {
             const verifyCodeExpiry = new Date();
             verifyCodeExpiry.setHours(verifyCodeExpiry.getHours() + 1)
             
-                const emailResponse = await sendVerificationEmail(
-                    username,
-                    email,
-                    verifyCode,
-                )
-
-                if (!emailResponse.success) {
-                    return Response.json(
-                        {
-                            success: false,
-                            message: "email not sent"
-                        },
-                        {
-                            status: 500
-                        }
-                    ) 
-                }
+               
 
             if(existingUserByEmail){
                 
@@ -63,6 +47,23 @@ export async function POST(request: Request) {
                 existingUserByEmail.verifyCode = verifyCode;
                 existingUserByEmail.verifyCodeExpiry = verifyCodeExpiry;
                 await existingUserByEmail.save()
+                 const emailResponse = await sendVerificationEmail(
+                    username,
+                    email,
+                    verifyCode,
+                )
+
+                if (!emailResponse.success) {
+                    return Response.json(
+                        {
+                            success: false,
+                            message: "email not sent"
+                        },
+                        {
+                            status: 500
+                        }
+                    ) 
+                }
                  return Response.json(
                     {
                         success: true,
@@ -86,7 +87,23 @@ export async function POST(request: Request) {
                     messages: []
                 })
                 await newUser.save()
-                
+                 const emailResponse = await sendVerificationEmail(
+                    username,
+                    email,
+                    verifyCode,
+                )
+
+                if (!emailResponse.success) {
+                    return Response.json(
+                        {
+                            success: false,
+                            message: "email not sent"
+                        },
+                        {
+                            status: 500
+                        }
+                    ) 
+                }
                 return Response.json(
                     {
                         success: true,

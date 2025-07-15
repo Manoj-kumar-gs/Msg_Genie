@@ -1,10 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💬 MsgGenie — Create Your Personal Message Link
 
-## Getting Started
+A full-stack, TypeScript-powered web app where users can receive anonymous messages through a shareable link. Anonymous users can use AI to get message suggestions and send them directly — securely and privately.
 
-First, run the development server:
+---
+
+## ✨ Features
+
+- ✅ Account creation with email verification  
+- 🔐 Secure sign-in (Credentials, Google, GitHub via `next-auth`)  
+- ⚙️ Toggle "Accepting Messages" from dashboard  
+- 📬 Anonymous messaging via shareable user link  
+- 🤖 AI-suggested messages for anonymous users  
+- 📥 View and 🗑️ Delete messages from dashboard  
+- 🛡 Secure password handling with `bcryptjs`  
+- 🧠 Smart form UX with `zod` validation + debounce username check  
+- ⚡ Optimized MongoDB queries (DB-level fetch/update)  
+- 🧩 Middleware to protect routes (e.g., `/dashboard`)  
+- 🟦 Built entirely with **TypeScript** for type safety  
+
+---
+
+## 🛠 Tools & Technologies Used
+
+### 🔧 Frontend
+- **Next.js** (App Router)  
+- **Tailwind CSS** (Fully responsive UI)  
+- **TypeScript** (Static type checking)  
+- **React Hook Form** + **Zod** (Schema-based form validation)  
+- **usehooks-ts** (Debounced input & other custom hooks)  
+
+### 🔐 Authentication
+- **NextAuth.js**
+  - Credentials provider  
+  - Google OAuth  
+  - GitHub OAuth  
+- **JWT Session Strategy** (Lightweight & scalable)  
+- **Custom JWT and Session callbacks**  
+
+### 🧠 Backend & AI
+- **MongoDB** with **Mongoose** (Optimized DB access)  
+- **LLM API** for AI-generated message suggestions (custom prompts)  
+- **MongoDB Aggregation Pipelines** for optimized reads  
+- **MongoDB Update Operators** for direct updates (no over-fetching)  
+
+---
+
+## ⚙️ How to Run Locally
+
+### 1. 🚀 Clone the Repository
 
 ```bash
+git clone https://github.com/Manoj-kumar-gs/Msg_Genie.git
+cd Msg_Genie
+
+
+### 2. 📦 Install Dependencies
+
+npm install
+# or
+yarn install
+
+### 3. ⚙️ Set Up Environment Variables
+Create a .env.local file in the root directory and add the following:
+
+MONGODB_URI=your_mongodb_connection_string
+NEXTAUTH_SECRET=your_nextauth_secret
+NEXTAUTH_URL=http://localhost:3000
+
+EMAIL_SERVER_USER=your_email_address
+EMAIL_SERVER_PASSWORD=your_email_password
+EMAIL_FROM=your_email_address
+
+AI_API_KEY=your_llm_api_key
+
+
+### 4. run the development server:
+
 npm run dev
 # or
 yarn dev
@@ -15,22 +86,3 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

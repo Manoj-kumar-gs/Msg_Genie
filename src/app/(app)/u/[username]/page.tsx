@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -46,6 +46,24 @@ export default function Suggester() {
     },
   });
 
+  useEffect(() => {
+    fetchSuggestions();
+  }, [])
+
+  const fetchSuggestions = useCallback(async () => {
+    setSuggestedMessages([]);
+    setIsSuggestLoading(true);
+    try {
+      const response = await axios.post<string>('/api/suggest-messages');
+      setSuggestedMessages(splitStringMessages(response.data));
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiResponse>;
+      toast.error(axiosError.response?.data.message ?? 'Failed to fetch suggestions');
+    } finally {
+      setIsSuggestLoading(false);
+    }
+  },[]);
+
   const messageContent = form.watch('content');
 
   const handleSuggestionClick = (msg: string) => {
@@ -71,20 +89,6 @@ export default function Suggester() {
     }
   };
 
-  const fetchSuggestions = async () => {
-    setSuggestedMessages([]);
-    setIsSuggestLoading(true);
-    try {
-      const response = await axios.post<string>('/api/suggest-messages');
-      setSuggestedMessages(splitStringMessages(response.data));
-    } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse>;
-      toast.error(axiosError.response?.data.message ?? 'Failed to fetch suggestions');
-    } finally {
-      setIsSuggestLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen py-10 px-4 flex items-center justify-center bg-gradient-to-br from-slate-100 to-white">
       <div className="w-full max-w-3xl bg-white p-8 rounded-xl shadow-xl">
@@ -99,10 +103,10 @@ export default function Suggester() {
               name="suggester"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Your Name or Email <span className="text-gray-500 text-sm">(optional)</span></FormLabel>
+                  <FormLabel>Your Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="e.g., John Doe"
+                      placeholder="Your Name"
                       className="focus-visible:ring-indigo-500"
                       {...field}
                     />
@@ -120,8 +124,8 @@ export default function Suggester() {
                   <FormLabel>Your Message</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Write something kind, curious, or fun..."
-                      className="resize-none focus-visible:ring-indigo-500 min-h-[120px]"
+                      placeholder="Write something you want to say..."
+                      className="resize-none focus-visible:ring-indigo-500"
                       {...field}
                     />
                   </FormControl>
@@ -152,7 +156,7 @@ export default function Suggester() {
         <Separator className="my-10" />
 
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row items-center justify-between">
             <h2 className="text-lg font-semibold">AI Message Suggestions</h2>
             <button
               onClick={fetchSuggestions}

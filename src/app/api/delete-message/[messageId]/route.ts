@@ -5,8 +5,13 @@ import { authOptions } from "../../auth/[...nextauth]/options";
 import UserModel from "@/models/user";
 import mongoose from "mongoose";
 
-export async function DELETE(req:Request, context:{params: {messageId: string}}) {
-       await dbConnect();
+type Context = {
+  params: {
+    messageId: string;
+  };
+};
+export async function DELETE(req: Request, context: Context) {
+  const { params } = context;
     const session = await getServerSession(authOptions)
     if (!session) {
         return Response.json({
@@ -17,9 +22,8 @@ export async function DELETE(req:Request, context:{params: {messageId: string}})
                 status: 401
             })
     }
-    const {messageId} = context.params
+    const {messageId} = params
     const dbMessageId = new mongoose.Types.ObjectId(messageId)
-    console.log("dbMessageId : ",dbMessageId)
     try {
         const deleteConfirmation = await UserModel.updateOne(
             {_id:session._id},

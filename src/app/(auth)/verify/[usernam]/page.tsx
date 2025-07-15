@@ -63,7 +63,7 @@ const page = () => {
   }, [usernameFromLink, codeFromLink]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-slate-100 px-4">
+    <div className="min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-slate-100 px-4">
       <div className="bg-white shadow-xl border border-slate-200 rounded-xl p-8 w-full max-w-md flex flex-col items-center">
         <h2 className="text-2xl font-bold text-indigo-600 mb-2">Verify Your Account</h2>
         <p className="text-sm text-gray-500 mb-6 text-center">

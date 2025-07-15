@@ -5,8 +5,6 @@ import { ToastContainer } from 'react-toastify';
 import Navbar from "@/components/Navbar";
 import SessionWrapper from "./providers/SessionWrapper";
 import Footer from "@/components/Footer";
-// {/* <link rel="preconnect" href="https://fonts.googleapis.com"></link> */}
-// <link rel="preconnect" href="https://fonts.googleapis.com"></link>
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -31,13 +29,18 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased max-w-[100vw]`}
       >
         <SessionWrapper>
           <div>
-            {/* <VerificationEmail/> */}
           </div>
           <div >
             <Navbar />

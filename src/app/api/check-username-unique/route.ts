@@ -15,7 +15,6 @@ export async function GET(request: Request) {
             username: searchParams.get('username')
         }
         const result = usernameQuerySchema.safeParse(queryparams)
-        console.log(result)
 
         if (!result.success) {
             console.error("fieldErrors :", result.error.flatten().fieldErrors);
