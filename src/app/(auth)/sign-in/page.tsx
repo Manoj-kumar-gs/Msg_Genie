@@ -11,7 +11,7 @@ import { ApiResponse } from "@/types/apiResponse"
 import { toast } from 'react-toastify';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Loader } from 'lucide-react';
+import { Loader, Loader2 } from 'lucide-react';
 import Link from "next/link"
 
 
@@ -108,7 +108,7 @@ const page = () => {
                 {isSubmiting ? (
                   <>
                     <div className="flex justify-center items-center gap-2">
-                      <Loader className="animate-spin" />
+                      <Loader2 className="animate-spin" />
                       <p>Please Wait...</p>
                     </div>
                   </>

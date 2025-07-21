@@ -8,12 +8,13 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import messages from "@/messages.json";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Loader } from "lucide-react";
+import { SkeletonDemo } from "@/components/Skeleton";
 
 export default function Home() {
   const router = useRouter();
@@ -31,6 +32,18 @@ export default function Home() {
   const routingHandler = async (path: string) => {
  router.push(path);
   };
+
+  const [skeletonUI, setSkeletonUI] = useState(true);
+useEffect(() => {
+  const timer = setTimeout(() => {
+    setSkeletonUI(false);
+  }, 500);
+
+  return () => clearTimeout(timer); // cleanup
+}, []);
+
+
+  if(skeletonUI) { return <SkeletonDemo /> }
 
   return (
     <div className="min-h-[80vh] bg-white text-gray-800">

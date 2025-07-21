@@ -1,13 +1,16 @@
 'use client'
 import MessageCard from '@/components/MessageCard'
+import { SkeletonDemo } from '@/components/Skeleton'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
 import { Message } from '@/models/user'
 import { acceptMessageSchema } from '@/schemas/acceptMessageSchema'
 import { ApiResponse } from '@/types/apiResponse'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios, { AxiosError } from 'axios'
-import { Copy, Loader, RefreshCcw, RefreshCcwIcon } from 'lucide-react'
+import { Copy, Loader, Loader2, RefreshCcw, RefreshCcwIcon } from 'lucide-react'
+import { set } from 'mongoose'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -32,6 +35,43 @@ const DashboardPage = () => {
   const { register, watch, setValue } = form
 
   const acceptMessages = watch('AcceptMessage')
+
+  const handleSwitchChange = async () => {
+    const newValue = !acceptMessages
+    setIsSwitchLoading(true)
+    setValue('AcceptMessage', newValue)
+    try {
+      const response = await axios.post('api/accepting-messages', {
+        acceptMessages: newValue
+      })
+    } catch (error) {
+      const axiosError = error as AxiosError
+      toast.error(`${axiosError}`)
+    } finally {
+      setIsSwitchLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (!username) return
+    const baseUrl = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`
+    setProfileURL(`${baseUrl}/u/${username}`)
+  }, [username])
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(profileURL)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  const handleDeleteMessage = (messageId: string) => {
+    setMessages(prev => {
+      const updated = prev.filter(item => item._id !== messageId)
+      return updated
+    })
+  }
+
+
 
   const fetchAcceptingMessages = useCallback(async () => {
     setIsSwitchLoading(true)
@@ -61,43 +101,20 @@ const DashboardPage = () => {
       setIsLoading(false)
     }
   }, [setIsLoading])
+  const [skeletonUI, setSkeletonUI] = useState(true);
 
-  const handleSwitchChange = async () => {
-    const newValue = !acceptMessages
-    setIsSwitchLoading(true)
-    setValue('AcceptMessage', newValue)
-    try {
-      const response = await axios.post('api/accepting-messages', {
-        acceptMessages: newValue
-      })
-    } catch (error) {
-      const axiosError = error as AxiosError
-      toast.error(`${axiosError}`)
-    } finally {
-      setIsSwitchLoading(false)
-    }
-  }
- 
   useEffect(() => {
-    const baseUrl = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`
-    setProfileURL(`${baseUrl}/u/${username}`)
     fetchAcceptingMessages();
     fetchMessages();
-  }, [data?.username])
+    const timer = setTimeout(() => {
+      setSkeletonUI(false);
+    }, 500);
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(profileURL)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000);
-  }
+    return () => clearTimeout(timer); // cleanup
+  }, []);
 
-  const handleDeleteMessage = (messageId: string) => {
-    setMessages(prev => {
-      const updated = prev.filter(item => item._id !== messageId)
-      return updated
-    })
-  }
 
+  if (skeletonUI) { return <SkeletonDemo /> }
 
   return (
     <div className='w-[99vw] flex flex-col justify-start items-start gap-7 p-8'>
@@ -137,14 +154,14 @@ const DashboardPage = () => {
         <Button onClick={() => { fetchMessages(true) }} className='cursor-pointer'>
           {isLoading ? (
             <>
-              <Loader className='animate-spin-fast' />
+              <Loader2 className='animate-spin' />
             </>
           ) : (
             <>
               <RefreshCcw className='hover:cursor-pointer' />
             </>
           )}
-        </Button> 
+        </Button>
       </div>
 
       {messages.length > 0 ? (
@@ -165,3 +182,194 @@ const DashboardPage = () => {
 }
 
 export default DashboardPage
+
+
+
+
+
+
+
+
+// 'use client'
+
+// import React, { useCallback, useEffect, useState } from 'react'
+// import { useForm } from 'react-hook-form'
+// import { zodResolver } from '@hookform/resolvers/zod'
+// import { useSession } from 'next-auth/react'
+// import axios, { AxiosError } from 'axios'
+// import { useRouter } from 'next/navigation'
+// import { toast } from 'react-toastify'
+// import Link from 'next/link'
+// import { Copy, Loader2, RefreshCcw, Inbox } from 'lucide-react'
+
+// import MessageCard from '@/components/MessageCard'
+// import { SkeletonDemo } from '@/components/Skeleton'
+// import { Button } from '@/components/ui/button'
+// import { Switch } from '@/components/ui/switch'
+// import { Message } from '@/models/user'
+// import { acceptMessageSchema } from '@/schemas/acceptMessageSchema'
+// import { ApiResponse } from '@/types/apiResponse'
+// import { z } from 'zod'
+
+// type AcceptMessageForm = z.infer<typeof acceptMessageSchema>
+
+// const DashboardPage = () => {
+//   const [messages, setMessages] = useState<Message[]>([])
+//   const [isSwitchLoading, setIsSwitchLoading] = useState(false)
+//   const [isLoading, setIsLoading] = useState(false)
+//   const [profileURL, setProfileURL] = useState('')
+//   const [copied, setCopied] = useState(false)
+//   const [skeletonUI, setSkeletonUI] = useState(true)
+
+//   const router = useRouter()
+//   const { data: session } = useSession()
+//   const username = (session?.user as any)?.username
+
+//   const form = useForm<AcceptMessageForm>({
+//     resolver: zodResolver(acceptMessageSchema),
+//   })
+
+//   const { register, watch, setValue } = form
+//   const acceptMessages = watch('AcceptMessage')
+
+//   const handleSwitchChange = async () => {
+//     const newValue = !acceptMessages
+//     setIsSwitchLoading(true)
+//     setValue('AcceptMessage', newValue)
+//     try {
+//       await axios.post('api/accepting-messages', {
+//         acceptMessages: newValue,
+//       })
+//     } catch (error) {
+//       const axiosError = error as AxiosError
+//       toast.error(`${axiosError}`)
+//     } finally {
+//       setIsSwitchLoading(false)
+//     }
+//   }
+
+//   const fetchAcceptingMessages = useCallback(async () => {
+//     setIsSwitchLoading(true)
+//     try {
+//       const response = await axios.get<ApiResponse>('/api/accepting-messages')
+//       setValue('AcceptMessage', response?.data.isAcceptingMessages ?? true)
+//     } catch (error) {
+//       const axiosError = error as AxiosError
+//       toast.error(`${axiosError}`)
+//     } finally {
+//       setIsSwitchLoading(false)
+//     }
+//   }, [setValue])
+
+//   const fetchMessages = useCallback(async (refresh: boolean = false) => {
+//     setIsLoading(true)
+//     try {
+//       const response = await axios.get('api/get-messages')
+//       setMessages(response.data.messages ?? [])
+//       if (refresh) {
+//         toast.success('Messages refreshed successfully')
+//       }
+//     } catch (error) {
+//       const axiosError = error as AxiosError
+//       toast.error(`${axiosError}`)
+//     } finally {
+//       setIsLoading(false)
+//     }
+//   }, [])
+
+//   useEffect(() => {
+//     fetchAcceptingMessages()
+//     fetchMessages()
+//     const timer = setTimeout(() => setSkeletonUI(false), 500)
+//     return () => clearTimeout(timer)
+//   }, [fetchAcceptingMessages, fetchMessages])
+
+//   useEffect(() => {
+//     if (!username) return
+//     const baseUrl = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`
+//     setProfileURL(`${baseUrl}/u/${username}`)
+//   }, [username])
+
+//   const copyToClipboard = () => {
+//     navigator.clipboard.writeText(profileURL)
+//     setCopied(true)
+//     setTimeout(() => setCopied(false), 2000)
+//   }
+
+//   const handleDeleteMessage = (messageId: string) => {
+//     setMessages(prev => prev.filter(item => item._id !== messageId))
+//   }
+
+//   if (skeletonUI) return <SkeletonDemo />
+
+//   return (
+//     <div className='w-screen flex flex-col justify-start items-start gap-7 p-8'>
+//       <h1 className='font-extrabold text-3xl'>Your Dashboard</h1>
+
+//       {/* Copy Link Section */}
+//       <div className='flex flex-col justify-center items-start w-full'>
+//         <h2 className='font-bold text-[20px]'>Copy Your Link</h2>
+//         <div className='w-full flex items-end gap-3 h-15'>
+//           <input
+//             type='text'
+//             value={profileURL}
+//             readOnly
+//             className='font-semibold p-2 rounded-lg bg-slate-100 w-[80%] h-10'
+//           />
+//           <button
+//             onClick={copyToClipboard}
+//             disabled={copied}
+//             className={`flex items-center gap-2 px-6 py-2 rounded-lg font-semibold shadow-md transition duration-100 transform active:scale-95 cursor-pointer ${
+//               copied ? 'bg-green-500 text-green' : 'bg-indigo-500 text-white'
+//             }`}
+//           >
+//             {copied ? 'Copied' : 'Copy'}
+//           </button>
+//         </div>
+//       </div>
+
+//       {/* Accept Messages Toggle */}
+//       <div className='flex gap-2 items-center'>
+//         <Switch
+//           {...register('AcceptMessage')}
+//           checked={acceptMessages}
+//           onCheckedChange={handleSwitchChange}
+//           disabled={isSwitchLoading}
+//           className='cursor-pointer'
+//         />
+//         <span>{acceptMessages ? 'Accepting Messages' : 'Not Accepting Messages'}</span>
+//       </div>
+
+//       {/* Refresh Button */}
+//       <div>
+//         <Button onClick={() => fetchMessages(true)} disabled={isLoading}>
+//           {isLoading ? (
+//             <Loader2 className='animate-spin' />
+//           ) : (
+//             <RefreshCcw className='hover:cursor-pointer' />
+//           )}
+//         </Button>
+//       </div>
+
+//       {/* Message Cards */}
+//       {messages.length > 0 ? (
+//         <div className='grid grid-cols-1 md:grid-cols-3 w-full justify-center items-center place-items-center gap-5'>
+//           {messages.map(message => (
+//             <MessageCard
+//               key={message._id}
+//               message={message}
+//               onDeleteMessage={handleDeleteMessage}
+//             />
+//           ))}
+//         </div>
+//       ) : (
+//         <div className='flex flex-col items-center gap-3 text-gray-500 mt-5'>
+//           <Inbox className='h-10 w-10' />
+//           <div className='font-bold text-2xl'>There are no messages to display</div>
+//         </div>
+//       )}
+//     </div>
+//   )
+// }
+
+// export default DashboardPage

@@ -4,6 +4,15 @@ A full-stack, TypeScript-powered web app where users can receive anonymous messa
 
 ---
 
+## 🖼️ UI Screenshots
+
+### 🏠 Home Page
+
+![Home Page](public/msg-genie-home.png)
+
+### 📊 Dashboard Page
+
+![Dashboard](public/msg-genie-dashboard.png)
 ## ✨ Features
 
 - ✅ Account creation with email verification  

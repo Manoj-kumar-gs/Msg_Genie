@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Loader, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { z } from 'zod';
 import { useParams } from 'next/navigation';
 import { toast } from 'react-toastify';
@@ -142,7 +142,7 @@ export default function Suggester() {
               >
                 {isSending ? (
                   <div className="flex items-center justify-center gap-2">
-                    <Loader className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                     Sending...
                   </div>
                 ) : (
@@ -165,7 +165,7 @@ export default function Suggester() {
             >
               {isSuggestLoading ? (
                 <div className="flex items-center gap-2">
-                  <Loader className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin" />
                   Loading...
                 </div>
               ) : (

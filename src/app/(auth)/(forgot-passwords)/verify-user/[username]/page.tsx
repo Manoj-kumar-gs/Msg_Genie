@@ -16,7 +16,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
-import { Loader } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 const page = () => {
   const { username } = useParams() as { username: string };
@@ -97,7 +97,7 @@ const page = () => {
             >
               {verifying ? (
                 <div className="flex justify-center items-center gap-2">
-                  <Loader className="animate-spin" />
+                  <Loader2 className="animate-spin" />
                   Verifying...
                 </div>
               ) : (

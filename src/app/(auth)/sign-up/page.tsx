@@ -18,7 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Loader } from "lucide-react";
+import {  Loader2 } from "lucide-react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 
@@ -123,7 +123,7 @@ const SignUpPage = () => {
                       debounced(e.target.value);
                     }}
                   />
-                  {isCheckingUsername && <Loader className="animate-spin" />}
+                  {isCheckingUsername && <Loader2 className="animate-spin" />}
                   {!isCheckingUsername && usernameMessage && (
                     <p
                       className={`text-sm ${usernameMessage === "username is unique"
@@ -184,7 +184,7 @@ const SignUpPage = () => {
             >
               {isSubmitting ? (
                 <div className="flex justify-center items-center gap-2">
-                  <Loader className="animate-spin" />
+                  <Loader2 className="animate-spin" />
                   Processing...
                 </div>
               ) : (
@@ -201,7 +201,7 @@ const SignUpPage = () => {
                 onClick={() => routingHandler("/sign-in")}
               >
                 {routing ? (
-                  <Loader className="animate-spin inline-block mr-1" />
+                  <Loader2 className="animate-spin inline-block mr-1" />
                 ) : null}
                 Sign‑In
               </button>
