@@ -8,7 +8,7 @@ type ConnectionObject = {
 
 const connection: ConnectionObject = {}
 
-async function dbConnect(): Promise<any> {
+async function dbConnect(): Promise<unknown> {
     if (connection.isConnected) {
         console.log("already connected to mongodb")
         return

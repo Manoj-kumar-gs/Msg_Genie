@@ -49,10 +49,14 @@ const Page = () => {
       });
       toast.success(response.data.message);
       router.push('/sign-in');
-    } catch (error: any) {
-      toast.error(
-        error.response?.data?.message || 'An error occurred'
-      );
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || 'An error occurred'
+        );
+      } else {
+        toast.error('An unexpected error occurred');
+      }
     } finally {
       setVerifying(false);
     }

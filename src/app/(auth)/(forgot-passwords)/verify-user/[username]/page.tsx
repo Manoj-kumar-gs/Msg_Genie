@@ -46,10 +46,14 @@ const Page = () => {
       });
       toast.success('Code verified successfully');
       router.push(`/reset-password/${username}`);
-    } catch (error: any) {
-      toast.error(
-        error.response?.data?.message || 'Verification failed'
-      );
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || 'Verification failed'
+        );
+      } else {
+        toast.error('An unexpected error occurred');
+      }
     } finally {
       setVerifying(false);
     }

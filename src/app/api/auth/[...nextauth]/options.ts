@@ -14,13 +14,13 @@ export const authOptions: NextAuthOptions = {
         identifier: { label: "Username/Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials: any) {
+      async authorize(credentials: unknown) {
         await dbConnect();
 
         const user = await UserModel.findOne({
           $or: [
-            { username: credentials.identifier },
-            { email: credentials.identifier },
+            { username: (credentials as any).identifier },
+            { email: (credentials as any).identifier },
           ],
         });
 
@@ -29,7 +29,7 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Please verify your account before login");
 
         const isPasswordValid = await bcrypt.compare(
-          credentials.password,
+          (credentials as any).password,
           user.password
         );
 
