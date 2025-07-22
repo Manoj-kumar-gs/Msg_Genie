@@ -1,9 +1,6 @@
 import sendVerificationEmail from "@/clients/sendVerificationEmail";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/user";
-import { redirect } from "next/navigation";
-import { json } from "stream/consumers";
-import { success } from "zod/v4";
 
 export async function POST(req: Request) {
     try {
@@ -64,5 +61,6 @@ export async function POST(req: Request) {
         }, {
             status: 500
         })
+        console.error("Error sending verification email:", error);
     }
 }

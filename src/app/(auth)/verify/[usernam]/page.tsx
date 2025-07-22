@@ -3,7 +3,7 @@
 import axios, { AxiosError } from 'axios';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { ApiResponse } from '@/types/apiResponse';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -20,11 +20,13 @@ import {
 import { Input } from '@/components/ui/input';
 import { Loader } from 'lucide-react';
 
-const page = () => {
+const Page = () => {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const usernameFromLink = params.usernam; // typo? Should be `params.username`
+
+  // FIX: Correct typo here
+  const usernameFromLink = params.username;
   const codeFromLink = searchParams.get('c');
 
   const [verifying, setVerifying] = useState(false);
@@ -34,23 +36,27 @@ const page = () => {
     defaultValues: { code: codeFromLink ?? '' },
   });
 
-  const verifyUser = async (code: string) => {
-    if (!usernameFromLink) return;
-    setVerifying(true);
-    try {
-      const { data } = await axios.post('/api/check-user-isVerified', {
-        username: usernameFromLink,
-        verifyCode: { code },
-      });
-      toast.success(data.message);
-      router.replace('/dashboard');
-    } catch (err) {
-      const axiosErr = err as AxiosError<ApiResponse>;
-      toast.error(axiosErr.response?.data.message ?? 'Verification failed');
-    } finally {
-      setVerifying(false);
-    }
-  };
+  // FIX: Define verifyUser properly as an async function inside useCallback
+  const verifyUser = useCallback(
+    async (code: string) => {
+      if (!usernameFromLink) return;
+      setVerifying(true);
+      try {
+        const { data } = await axios.post('/api/check-user-isVerified', {
+          username: usernameFromLink,
+          verifyCode: { code },
+        });
+        toast.success(data.message);
+        router.replace('/dashboard');
+      } catch (err) {
+        const axiosErr = err as AxiosError<ApiResponse>;
+        toast.error(axiosErr.response?.data.message ?? 'Verification failed');
+      } finally {
+        setVerifying(false);
+      }
+    },
+    [usernameFromLink, router]
+  );
 
   const onSubmit = async (values: z.infer<typeof verifySchema>) => {
     await verifyUser(values.code);
@@ -60,7 +66,7 @@ const page = () => {
     if (usernameFromLink && codeFromLink) {
       verifyUser(codeFromLink);
     }
-  }, [usernameFromLink, codeFromLink]);
+  }, [usernameFromLink, codeFromLink, verifyUser]);
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-slate-100 px-4">
@@ -115,4 +121,5 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
+

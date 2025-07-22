@@ -1,4 +1,3 @@
-import Suggester from "@/app/(app)/u/[username]/page";
 import { z } from "zod";
 
 export const messageSchema = z.object({

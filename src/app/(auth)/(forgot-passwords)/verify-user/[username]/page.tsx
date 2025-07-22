@@ -18,7 +18,7 @@ import { toast } from 'react-toastify';
 import { z } from 'zod';
 import { Loader2 } from 'lucide-react';
 
-const page = () => {
+const Page = () => {
   const { username } = useParams() as { username: string };
   const [verifying, setVerifying] = useState(false);
   const router = useRouter();
@@ -40,7 +40,7 @@ const page = () => {
   const onSubmit = async (data: z.infer<typeof verificationCodeSchema>) => {
     setVerifying(true);
     try {
-      const response = await axios.post(`/api/check-user-isValid/`, {
+        await axios.post(`/api/check-user-isValid/`, {
         verificationCode: data.verificationCode,
         identifier: username.replace('%40', '@'),
       });
@@ -111,4 +111,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

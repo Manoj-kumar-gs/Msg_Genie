@@ -18,7 +18,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
 
-const page = () => {
+const Page = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
@@ -100,4 +100,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

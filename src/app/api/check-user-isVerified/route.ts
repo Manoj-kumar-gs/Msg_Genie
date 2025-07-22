@@ -3,7 +3,6 @@ import { verifySchema } from "@/schemas/verifySchema";
 import { usernameValidation } from "@/schemas/signUpSchema";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/user";
-import { success } from "zod/v4";
 
 const userCodeVerifySchema = z.object({
     username: usernameValidation,

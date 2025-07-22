@@ -10,10 +10,8 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import { useEffect, useRef, useState } from "react";
 import messages from "@/messages.json";
-import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Loader } from "lucide-react";
 import { SkeletonDemo } from "@/components/Skeleton";
 
 export default function Home() {
@@ -67,7 +65,7 @@ useEffect(() => {
             </h2>
             <p className="text-lg font-semibold text-gray-700">
               Enhance your conversations with smart, AI-powered suggestions.
-              Whether you're breaking the ice, asking fun questions, or giving compliments,
+              Whether you are breaking the ice, asking fun questions, or giving compliments,
               our AI helps you say it better.
             </p>
           </div>

@@ -1,14 +1,12 @@
 'use client'
-import React, { useState } from 'react'
-import { useSession, signOut, signIn } from 'next-auth/react'
-import Link from 'next/link'
+import { useSession, signOut } from 'next-auth/react'
 import { LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import MsgGenie from './Logo'
 
 const Navbar = () => {
   const router = useRouter();
-  const { data, status } = useSession()
+  const { data } = useSession()
 
   const routingHandler = async (path: string) => {
     router.push(path);

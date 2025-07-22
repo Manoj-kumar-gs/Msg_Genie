@@ -2,18 +2,14 @@
 import MessageCard from '@/components/MessageCard'
 import { SkeletonDemo } from '@/components/Skeleton'
 import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
 import { Message } from '@/models/user'
 import { acceptMessageSchema } from '@/schemas/acceptMessageSchema'
 import { ApiResponse } from '@/types/apiResponse'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios, { AxiosError } from 'axios'
-import { Copy, Loader, Loader2, RefreshCcw, RefreshCcwIcon } from 'lucide-react'
-import { set } from 'mongoose'
+import { Loader2, RefreshCcw } from 'lucide-react'
 import { useSession } from 'next-auth/react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
@@ -24,8 +20,7 @@ const DashboardPage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [profileURL, setProfileURL] = useState('')
   const [copied, setCopied] = useState(false)
-  const router = useRouter()
-  const { data, status } = useSession()
+  const { data } = useSession()
   const username = data?.username
 
   const form = useForm({
@@ -41,7 +36,7 @@ const DashboardPage = () => {
     setIsSwitchLoading(true)
     setValue('AcceptMessage', newValue)
     try {
-      const response = await axios.post('api/accepting-messages', {
+       await axios.post('api/accepting-messages', {
         acceptMessages: newValue
       })
     } catch (error) {
@@ -84,7 +79,7 @@ const DashboardPage = () => {
     } finally {
       setIsSwitchLoading(false)
     }
-  }, [setIsSwitchLoading])
+  }, [setIsSwitchLoading,setValue])
 
   const fetchMessages = useCallback(async (refresh: boolean = false) => {
     setIsLoading(true)
@@ -111,7 +106,7 @@ const DashboardPage = () => {
     }, 500);
 
     return () => clearTimeout(timer); // cleanup
-  }, []);
+  }, [fetchMessages,fetchAcceptingMessages]);
 
 
   if (skeletonUI) { return <SkeletonDemo /> }
@@ -166,7 +161,7 @@ const DashboardPage = () => {
 
       {messages.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-3 w-full justify-center items-center place-items-center space-y-5">
-          {messages.map((message, index) => (
+          {messages.map((message) => (
             <MessageCard
               key={message._id as string}
               message={message}

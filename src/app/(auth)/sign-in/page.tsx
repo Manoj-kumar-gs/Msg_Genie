@@ -2,31 +2,27 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { signIn, signOut } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { signInSchema } from "@/schemas/signInSchema"
-import axios, { AxiosError } from "axios"
-import { ApiResponse } from "@/types/apiResponse"
+import  { AxiosError } from "axios"
 import { toast } from 'react-toastify';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Loader, Loader2 } from 'lucide-react';
+import {  Loader2 } from 'lucide-react';
 import Link from "next/link"
 
 
-const page = () => {
+const Page = () => {
   const [isSubmiting, setIsSubmiting] = useState(false)
-  const [routing, setrouting] = useState(false)
 
   const router = useRouter();
 
   const routingHandler = async (path: string) => {
     try {
-      setrouting(true);
       setTimeout(() => {
         router.replace(path);
-        setrouting(false);
       })
     } catch (error) {
       console.error("Error occurred while routing:", error);
@@ -198,4 +194,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

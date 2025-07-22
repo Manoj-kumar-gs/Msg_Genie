@@ -2,7 +2,6 @@ import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/user";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/options";
-import { success } from "zod/v4";
 import mongoose from "mongoose";
 
 
@@ -48,6 +47,8 @@ export async function GET() {
         }, {
             status: 500
         })
+
+        console.error("Error fetching messages:", error);
     }
 
 }

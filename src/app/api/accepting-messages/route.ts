@@ -2,7 +2,6 @@ import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/user";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/options";
-import { success } from "zod/v4";
 
 
 export async function POST(request: Request) {
@@ -44,6 +43,7 @@ export async function POST(request: Request) {
                 status: 201
             })
     } catch (error) {
+        console.error("Error updating accept messages status:", error);
         return Response.json({
             success: false,
             message: "Failed to update accept messages status"
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
 
 
 
-export async function GET(request: Request) {
+export async function GET() {
     await dbConnect();
     const session = await getServerSession(authOptions)
     if (!session) {
@@ -95,5 +95,6 @@ export async function GET(request: Request) {
             {
                 status: 500
             })
+            console.error("Error fetching accept messages status:", error);
     }
 }

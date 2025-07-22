@@ -24,7 +24,7 @@ export default async function sendVerificationEmail(
     );
 
     // 3. Send the email
-    const info = await transporter.sendMail({
+    await transporter.sendMail({
       from: process.env.GMAIL_USER,
       to: email,
       subject: 'Your MsgGenie Verification Code',

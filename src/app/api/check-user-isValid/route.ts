@@ -1,7 +1,6 @@
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/user";
 import { console } from "inspector";
-import { redirect } from "next/navigation";
 
 export async function POST(req: Request) {
     try {

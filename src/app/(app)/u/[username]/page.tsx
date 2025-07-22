@@ -21,7 +21,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { ApiResponse } from '@/types/apiResponse';
 import { messageSchema } from '@/schemas/messageSchema';
 
@@ -46,9 +46,6 @@ export default function Suggester() {
     },
   });
 
-  useEffect(() => {
-    fetchSuggestions();
-  }, [])
 
   const fetchSuggestions = useCallback(async () => {
     setSuggestedMessages([]);
@@ -62,7 +59,11 @@ export default function Suggester() {
     } finally {
       setIsSuggestLoading(false);
     }
-  },[]);
+  }, []);
+
+  useEffect(() => {
+    fetchSuggestions();
+  }, [fetchSuggestions])
 
   const messageContent = form.watch('content');
 

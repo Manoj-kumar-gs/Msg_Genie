@@ -1,5 +1,4 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { string } from "zod/v4";
 
 export interface Message extends Document {
     suggester: string;

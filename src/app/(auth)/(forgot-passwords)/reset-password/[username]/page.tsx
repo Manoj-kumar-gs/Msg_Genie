@@ -20,7 +20,7 @@ import { toast } from 'react-toastify';
 import { z } from 'zod';
 import { Loader } from 'lucide-react';
 
-const page = () => {
+const Page = () => {
   const [verifying, setVerifying] = React.useState(false);
   const router = useRouter();
   const { username } = useParams() as { username: string };
@@ -130,4 +130,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
