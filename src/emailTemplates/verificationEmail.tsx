@@ -20,7 +20,7 @@ export default function VerificationEmail({ username, otp }: VerificationEmailPr
   return (
     <Html lang="en" dir="ltr">
       <Head>
-        <title>Verification Code</title>
+        <title>MsgGenie Verification Code</title>
         <Font
           fontFamily="Roboto"
           fallbackFontFamily="Verdana"
@@ -32,28 +32,31 @@ export default function VerificationEmail({ username, otp }: VerificationEmailPr
           fontStyle="normal"
         />
       </Head>
-      <Preview>Here's your verification code: {otp}</Preview>
+      <Preview>Your MsgGenie verification code: {otp}</Preview>
       <Section>
         <Row>
-          <Heading as="h2">Hello {username},</Heading>
+          <Heading as="h2">Welcome to MsgGenie, {username}!</Heading>
         </Row>
         <Row>
           <Text>
-            Thank you for registering. Please use the following verification
-            code to complete your registration:
-          </Text>
-        </Row>
-        <Row>
-          <Text><strong>{otp}</strong></Text>
-        </Row>
-        <Row>
-          <Text>
-            ⚠️ <strong>Note:</strong> This verification code will expire in <strong>1 hour</strong>.
+            Thank you for signing up with <strong>MsgGenie</strong>.
+            <br />
+            Please use the verification code below to complete your registration:
           </Text>
         </Row>
         <Row>
           <Text>
-            If you did not request this code, please ignore this email.
+            <strong style={{ fontSize: '20px', letterSpacing: '2px' }}>{otp}</strong>
+          </Text>
+        </Row>
+        <Row>
+          <Text>
+            <strong>Note:</strong> This code is valid for <strong>1 hour</strong> only.
+          </Text>
+        </Row>
+        <Row>
+          <Text>
+            If you did not request this code, you can safely ignore this email.
           </Text>
         </Row>
         <Row>
@@ -61,9 +64,18 @@ export default function VerificationEmail({ username, otp }: VerificationEmailPr
             href={`${process.env.NEXT_PUBLIC_APP_URL}/verify/${encodeURIComponent(
               username,
             )}?c=${encodeURIComponent(otp)}`}
-            style={{ color: '#61dafb' }}
+            style={{
+              backgroundColor: '#2196f3',
+              color: '#ffffff',
+              padding: '12px 24px',
+              borderRadius: '4px',
+              fontWeight: 'bold',
+              textDecoration: 'none',
+              marginTop: '10px',
+              display: 'inline-block',
+            }}
           >
-            Verify here
+            Verify your MsgGenie account
           </Button>
         </Row>
       </Section>

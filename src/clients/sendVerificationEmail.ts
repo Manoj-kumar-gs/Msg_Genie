@@ -27,7 +27,7 @@ export default async function sendVerificationEmail(
     const info = await transporter.sendMail({
       from: process.env.GMAIL_USER,
       to: email,
-      subject: 'Message With AI | Verification code',
+      subject: 'Your MsgGenie Verification Code',
       html: htmlContent,
     });
 
