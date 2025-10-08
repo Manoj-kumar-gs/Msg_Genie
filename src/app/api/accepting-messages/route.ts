@@ -16,7 +16,7 @@ export async function POST(request: Request) {
                 status: 401
             })
     }
-    const userId = session._id
+    const userId = session?.user?._id
     try {
         const { acceptMessages } = await request.json();
         const user = await UserModel.findOneAndUpdate(
@@ -68,7 +68,7 @@ export async function GET() {
                 status: 401
             })
     }
-    const userId = session._id
+    const userId = session?.user?._id
     try {
         const user = await UserModel.findById(userId);
         if (!user) {

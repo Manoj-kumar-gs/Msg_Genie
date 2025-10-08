@@ -53,7 +53,7 @@ const Navbar = () => {
             className='text-[20px] cursor-pointer'
             onClick={() => routingHandler('/dashboard')}
           >
-            {data ? data?.username : 'There!'}
+            {data ? data?.user?.username : 'There!'}
           </h2>
         </div>
       </div>

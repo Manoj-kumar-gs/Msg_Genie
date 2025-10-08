@@ -21,7 +21,7 @@ const DashboardPage = () => {
   const [profileURL, setProfileURL] = useState('')
   const [copied, setCopied] = useState(false)
   const { data } = useSession()
-  const username = data?.username
+  const username = data?.user?.username
 
   const form = useForm({
     resolver: zodResolver(acceptMessageSchema)
@@ -36,7 +36,7 @@ const DashboardPage = () => {
     setIsSwitchLoading(true)
     setValue('AcceptMessage', newValue)
     try {
-       await axios.post('api/accepting-messages', {
+      await axios.post('api/accepting-messages', {
         acceptMessages: newValue
       })
     } catch (error) {
@@ -79,7 +79,7 @@ const DashboardPage = () => {
     } finally {
       setIsSwitchLoading(false)
     }
-  }, [setIsSwitchLoading,setValue])
+  }, [setIsSwitchLoading, setValue])
 
   const fetchMessages = useCallback(async (refresh: boolean = false) => {
     setIsLoading(true)
@@ -106,7 +106,7 @@ const DashboardPage = () => {
     }, 500);
 
     return () => clearTimeout(timer); // cleanup
-  }, [fetchMessages,fetchAcceptingMessages]);
+  }, [fetchMessages, fetchAcceptingMessages]);
 
 
   if (skeletonUI) { return <SkeletonDemo /> }

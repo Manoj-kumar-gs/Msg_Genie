@@ -65,7 +65,7 @@ const MessageCard = ({message, onDeleteMessage} : MessageCardProps ) => {
           <AlertDialogAction onClick={handleDeleteMessage} className='cursor-pointer hover:bg-red-700 bg-gray-800'>Continue</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
-    </AlertDialog>
+    </AlertDialog> 
   </CardHeader>
 </Card>
   )

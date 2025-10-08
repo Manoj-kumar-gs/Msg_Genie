@@ -17,7 +17,7 @@ export async function GET() {
                 status: 401
             })
     }
-    const userId = new mongoose.Types.ObjectId(session._id as string)
+    const userId = new mongoose.Types.ObjectId(session?.user?._id as string)
     try {
         const user = await UserModel.aggregate([
             { $match: { _id: userId } },
@@ -41,6 +41,7 @@ export async function GET() {
             status: 200
         })
     } catch (error) {
+        console.log("Error fetching messages:", error);
         return Response.json({
             success: false,
             message: "Failed to get messages"
@@ -48,7 +49,6 @@ export async function GET() {
             status: 500
         })
 
-        console.error("Error fetching messages:", error);
     }
 
 }

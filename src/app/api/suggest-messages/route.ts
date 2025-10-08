@@ -2,7 +2,7 @@
 import { cerebras } from '@ai-sdk/cerebras';
 import { generateText } from 'ai';
 
-export const maxduration = 30;
+export const maxDuration = 30;
 export const runtime = 'edge';
 
 export async function POST() {

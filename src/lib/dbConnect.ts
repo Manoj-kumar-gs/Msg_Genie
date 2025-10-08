@@ -23,4 +23,4 @@ async function dbConnect(): Promise<unknown> {
     }
 }
  
-export default dbConnect;  
+export default dbConnect;   

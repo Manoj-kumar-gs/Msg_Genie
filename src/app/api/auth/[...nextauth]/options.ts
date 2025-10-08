@@ -6,6 +6,19 @@ import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/user";
 
+// Explicitly define credentials type for CredentialsProvider
+type Credentials = {
+  identifier: string;
+  password: string;
+};
+
+type DBUser = {
+  _id: string | { toString(): string };
+  username: string;
+  isVerified?: boolean;
+  isAcceptingMessages?: boolean;
+};
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -15,23 +28,22 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials: unknown) {
+        // Safely cast and destructure credentials
+        const { identifier, password } = credentials as Credentials;
+
         await dbConnect();
 
         const user = await UserModel.findOne({
           $or: [
-            { username: (credentials as any).identifier },
-            { email: (credentials as any).identifier },
+            { username: identifier },
+            { email: identifier },
           ],
         });
 
         if (!user) throw new Error("User not found");
-        if (!user.isVerified)
-          throw new Error("Please verify your account before login");
+        if (!user.isVerified) throw new Error("Please verify your account before login");
 
-        const isPasswordValid = await bcrypt.compare(
-          (credentials as any).password,
-          user.password
-        );
+        const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) throw new Error("Incorrect password");
 
@@ -83,10 +95,12 @@ export const authOptions: NextAuthOptions = {
           }
         } else {
           // Credentials login
-          token._id = user._id?.toString();
-          token.username = user.username;
-          token.isVerified = user.isVerified;
-          token.isAcceptingMessages = user.isAcceptingMessages;
+          const u = user as DBUser;
+          token._id = typeof u._id === "string" ? u._id : u._id.toString();
+          token.username = u.username === "string" ? u.username : u.username.toString();
+          token.isVerified = u.isVerified as boolean;
+          token.isAcceptingMessages = u.isAcceptingMessages as boolean;
+
         }
       }
 
@@ -95,13 +109,18 @@ export const authOptions: NextAuthOptions = {
 
     async session({ session, token }) {
       if (token) {
-        session._id = token._id;
-        session.username = token.username;
-        session.isVerified = token.isVerified;
-        session.isAcceptingMessages = token.isAcceptingMessages;
+        session.user = {
+          ...session.user,
+          _id: token._id as string,
+          username: token.username as string,
+          email: token.email as string,
+          isVerified: token.isVerified as boolean,
+          isAcceptingMessages: token.isAcceptingMessages as boolean,
+        };
       }
       return session;
-    },
+    }
+
   },
 
   pages: {
