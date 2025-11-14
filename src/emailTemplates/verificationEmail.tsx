@@ -61,7 +61,7 @@ export default function VerificationEmail({ username, otp }: VerificationEmailPr
         </Row>
         <Row>
           <Button
-            href={`${process.env.NEXT_PUBLIC_APP_URL}/verify/${encodeURIComponent(
+            href={`${process.env.NEXTAUTH_URL}/verify/${encodeURIComponent(
               username,
             )}?c=${encodeURIComponent(otp)}`}
             style={{

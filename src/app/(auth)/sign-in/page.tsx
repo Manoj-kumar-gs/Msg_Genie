@@ -47,7 +47,7 @@ const Page = () => {
         password: data.password,
       }); 
 
-      if (result?.error) {
+      if (result?.error) { 
         if (result.error === 'CredentialsSignin') {
           toast.error('Incorrect username or password');
         } else {

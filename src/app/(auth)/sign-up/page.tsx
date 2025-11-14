@@ -38,7 +38,7 @@ const SignUpPage = () => {
   const routingHandler = async (path: string) => {
     try {
       setRouting(true);
-      // slight delay lets us show the spinner 👀
+      // slight delay lets us show the spinner 
       setTimeout(() => {
         router.push(path);
         setRouting(false);
@@ -89,7 +89,7 @@ const SignUpPage = () => {
     try {
       const response = await axios.post("/api/sign-up", data);
       if (response.status === 201) {
-        toast.success("Account created successfully!");
+        toast.success("Verification Email Sent");
         routingHandler(`/verify/${data.username}`);
       }
     } catch (error) {
@@ -124,7 +124,7 @@ const SignUpPage = () => {
                     }}
                   />
                   {isCheckingUsername && <Loader2 className="animate-spin" />}
-                  {!isCheckingUsername && usernameMessage && (
+                  {!isCheckingUsername && username && usernameMessage && (
                     <p
                       className={`text-sm ${usernameMessage === "username is unique"
                           ? "text-green-500"
@@ -197,7 +197,7 @@ const SignUpPage = () => {
               <p>Already have an account?</p>
               <button
                 type="button"
-                className="text-blue-500 hover:underline"
+                className="text-blue-500 hover:underline cursor-pointer"
                 onClick={() => routingHandler("/sign-in")}
               >
                 {routing ? (
