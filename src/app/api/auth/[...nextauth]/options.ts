@@ -42,6 +42,9 @@ export const authOptions: NextAuthOptions = {
 
         if (!user) throw new Error("User not found");
         if (!user.isVerified) throw new Error("Please verify your account before login");
+        if (!user.password) {
+          throw new Error("This account was created with Google/Github. Please sign in with Google/Github.");
+        }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -54,7 +57,7 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     }),
-    GithubProvider({ 
+    GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID ?? "",
       clientSecret: process.env.GITHUB_CLIENT_SECRET ?? "",
     }),
