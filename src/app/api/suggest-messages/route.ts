@@ -1,9 +1,8 @@
-// Before: import { cerebras } from '@ai-sdk/cerebras';
-import { google } from '@ai-sdk/google'; //
+import { google } from '@ai-sdk/google';
 import { generateText } from 'ai';
 
 export const maxDuration = 30;
-export const runtime = 'edge';
+// Remove or comment out: export const runtime = 'edge';
 
 export async function POST() {
   try {
@@ -11,8 +10,7 @@ export async function POST() {
     const randomTopic = topics[Math.floor(Math.random() * topics.length)];
 
     const { text } = await generateText({
-      // Change model provider here:
-      model: google('gemini-3.8-flash'), //
+      model: google('gemini-1.5-flash'), // Updated to stable model
       prompt: `Create 3 open ended questions in a ${randomTopic} tone, separated by '||', for an anonymous social Q&A platform. Avoid quotes.`,
       temperature: 0.9,
       maxTokens: 300,
