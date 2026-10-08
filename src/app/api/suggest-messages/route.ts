@@ -2,7 +2,6 @@ import { google } from '@ai-sdk/google';
 import { generateText } from 'ai';
 
 export const maxDuration = 30;
-// Remove or comment out: export const runtime = 'edge';
 
 export async function POST() {
   try {
