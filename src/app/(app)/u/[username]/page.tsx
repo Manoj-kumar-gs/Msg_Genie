@@ -28,8 +28,11 @@ import { messageSchema } from '@/schemas/messageSchema';
 const specialChar = '||';
 
 const splitStringMessages = (messageString: string): string[] => {
-  const splitString = messageString.split(':').slice(-1);
-  return splitString[0].split(specialChar);
+  if (!messageString) return [];
+  return messageString
+    .split(specialChar)
+    .map((msg) => msg.replace(/[*#]/g, '').trim()) // Removes markdown asterisks or hashes
+    .filter(Boolean);
 };
 
 export default function Suggester() {

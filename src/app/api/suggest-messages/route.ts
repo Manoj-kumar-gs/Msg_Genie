@@ -1,5 +1,5 @@
-
-import { cerebras } from '@ai-sdk/cerebras';
+// Before: import { cerebras } from '@ai-sdk/cerebras';
+import { google } from '@ai-sdk/google'; //
 import { generateText } from 'ai';
 
 export const maxDuration = 30;
@@ -11,20 +11,20 @@ export async function POST() {
     const randomTopic = topics[Math.floor(Math.random() * topics.length)];
 
     const { text } = await generateText({
-      model: cerebras('llama3.1-8b'),
-      prompt: `Create 3 open-ended questions in a ${randomTopic} tone, separated by '||', for an anonymous social Q&A platform. Avoid personal or sensitive topics.`,
+      // Change model provider here:
+      model: google('gemini-3.8-flash'), //
+      prompt: `Create 3 open ended questions in a ${randomTopic} tone, separated by '||', for an anonymous social Q&A platform. Avoid quotes.`,
       temperature: 0.9,
       maxTokens: 300,
     });
 
-
     return new Response(text);
   } catch (error) {
-    console.error('Error calling Cerebras:', error);
+    console.error('Error calling Google Gemini:', error);
     return Response.json(
       {
         success: false,
-        message: 'Failed to generate response from Cerebras.',
+        message: 'Failed to generate response from AI.',
       },
       { status: 500 }
     );

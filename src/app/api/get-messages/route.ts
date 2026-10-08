@@ -26,7 +26,7 @@ export async function GET() {
             { $group: { _id: '$_id', messages: { $push: '$messages' } } }
         ])
         if (!user) {
-            return Response.json({
+            return Response.json({ 
                 success: false,
                 message: "user not found"
             }, {

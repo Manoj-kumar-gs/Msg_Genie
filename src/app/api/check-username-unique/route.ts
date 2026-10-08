@@ -13,7 +13,7 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url);
         const queryparams = {
             username: searchParams.get('username')
-        }
+        } 
         const result = usernameQuerySchema.safeParse(queryparams)
 
         if (!result.success) {
@@ -30,7 +30,7 @@ export async function GET(request: Request) {
         const { username } = result.data
         const existingUser = await UserModel.findOne({ username: username})
         if (existingUser) {
-            return Response.json({
+            return Response.json({ 
                 success: false,
                 message: "username already taken"
             })

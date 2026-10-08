@@ -87,7 +87,7 @@ const SignUpPage = () => {
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setIsSubmitting(true);
     try {
-      const response = await axios.post("/api/sign-up", data);
+      const response = await axios.post("/api/sign-up", data); 
       if (response.status === 201) {
         toast.success("Verification Email Sent");
         routingHandler(`/verify/${data.username}`);

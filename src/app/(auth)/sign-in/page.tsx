@@ -62,7 +62,7 @@ const Page = () => {
       const axiosError = error as AxiosError
       console.log("axioserror : ", axiosError)
       toast.error(`Error signing in`)
-    } finally {
+    } finally { 
       setIsSubmiting(false)
     }
   };
