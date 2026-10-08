@@ -9,7 +9,7 @@ export async function POST() {
     const randomTopic = topics[Math.floor(Math.random() * topics.length)];
 
     const { text } = await generateText({
-      model: google('gemini-1.5-flash'), // Updated to stable model
+      model: google('gemini-3.8-flash'),
       prompt: `Create 3 open ended questions in a ${randomTopic} tone, separated by '||', for an anonymous social Q&A platform. Avoid quotes.`,
       temperature: 0.9,
       maxTokens: 300,
